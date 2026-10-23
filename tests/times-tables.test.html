@@ -1,0 +1,58 @@
+<!-- Times tables trainer: learn, smart practice, skip-count jumps, memory match, one-minute race, editing the tables. -->
+<script>
+fakeClaude({weeks:[],lessons:[],items:[],tables:[0,1,2,3,4,5,10]});
+runTest(async()=>{
+  const key=k=>$q(`#overlay [data-act=ttkey][data-k="${k}"]`).click();
+  const typeNum=n=>{String(n).split('').forEach(key);key('ok')};
+  const eqAnswer=()=>{const sp=[...$q('#overlay .tteq').children];return sp[2].id==='kans'?(+sp[4].textContent)/(+sp[0].textContent):(+sp[0].textContent)*(+sp[2].textContent)};
+  $q('[data-act=go][data-id=math]').click();
+  T_.ok($qa('.ttbanner .ttbadge').length===7,'the banner should list the 7 learned tables');
+  $q('.ttbanner').click();
+  T_.ok($qa('#overlay .ttcard').length===7,'home should show 7 table cards');
+  // learn
+  $q('#overlay [data-act=ttlearn][data-n="4"]').click();
+  T_.ok($qa('#overlay .ttfact').length===11,'a table has 11 facts (×0 to ×10)');
+  $q('#overlay [data-act=ttfact][data-b="6"]').click();
+  T_.ok($txt('#ttshow').includes('24')&&$qa('#ttshow svg').length>0,'a fact should show how to find it and its picture');
+  // smart practice on ×3, two slips on the first question
+  $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=ttsel][data-n="3"]').click();
+  $q('#overlay [data-act=ttmode][data-mode=practice]').click();
+  const a0=eqAnswer();typeNum(a0+1);
+  T_.ok($qa('#pfeed .tutor').length===1&&!$qa('#pfeed .tutor.full').length,'first slip should give the table rule only');
+  typeNum(a0+2);
+  T_.ok($qa('#pfeed .tutor.full').length===1,'second slip should show the answer');
+  $q('#pnext').click();
+  let n=0;while($q('#overlay .tteq')&&n<30){n++;typeNum(eqAnswer());await wait(5);$q('#pnext').click();await wait(5)}
+  T_.ok(/^\d+ \/ 12$/.test($txt('#overlay .big-score')),'practice should end with a score out of 12 (11 facts plus the one that came back)');
+  // skip-count jumps
+  $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=ttmode][data-mode=ladder]').click();
+  const nextOf=()=>{const m=/(\d+) \+ (\d+)/.exec($txt('#overlay p.q'));return +m[1]+(+m[2])};
+  n=0;while($q('#overlay [data-act=ttjump]')&&n<15){n++;const v=nextOf();$qa('#overlay [data-act=ttjump]').find(b=>+b.dataset.v===v).click();await wait(5)}
+  T_.ok($txt('#overlay .ttseq').startsWith('0, 3, 6'),'the ladder should finish with the ×3 sequence');
+  // memory match with all tables
+  $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=ttsel][data-n="all"]').click();$q('#overlay [data-act=ttmode][data-mode=memory]').click();
+  T_.ok($qa('#overlay .mcard').length===12,'memory should deal 12 cards');
+  const val=lab=>{const m=/(\d+) × (\d+)/.exec(lab);return m?(+m[1])*(+m[2]):+lab},isFact=lab=>/×/.test(lab),known={};
+  const flip=k=>{$q(`#overlay [data-act=ttflip][data-k="${k}"]`).click();return $txt(`#overlay [data-act=ttflip][data-k="${k}"]`)};
+  n=0;while($q('#overlay .mcard:not(.done)')&&n<40){n++;
+    const open=$qa('#overlay .mcard:not(.done)').map(b=>+b.dataset.k);
+    const i=open.find(k=>!(k in known))??open[0];const li=flip(i);known[i]=li;
+    let j=open.find(k=>k!==i&&(k in known)&&isFact(known[k])!==isFact(li)&&val(known[k])===val(li));
+    if(j==null)j=open.find(k=>k!==i&&!(k in known));if(j==null)j=open.find(k=>k!==i);
+    known[j]=flip(j);await wait(1300)}
+  await wait(1200);
+  T_.ok($q('#overlay .end'),'memory should reach the end screen');
+  // one-minute race
+  $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=ttmode][data-mode=speed]').click();
+  for(let i=0;i<5;i++){typeNum(eqAnswer());await wait(400)}
+  await wait(61000);
+  T_.ok($txt('#overlay .big-score')==='5','the race should count 5 right answers');
+  // the parent edits the learned tables
+  $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=close]').click();$q('.ttbanner').click();$q('#overlay [data-act=tttables]').click();
+  T_.ok($qa('#modal input[name=t]').length===13,'the tables form should offer ×0 to ×12');
+  $q('#modal input[name=t][value="6"]').checked=true;$q('#fTables').requestSubmit();await wait(50);
+  const saved=window.__writes.filter(w=>w[0]==='settings/main').pop();
+  T_.ok(saved&&saved[1].tables.join(',')==='0,1,2,3,4,5,6,10','the new table list should be saved');
+  T_.ok(window.__writes.some(w=>w[0]==='results/tt'),'progress should be saved');
+});
+</script>

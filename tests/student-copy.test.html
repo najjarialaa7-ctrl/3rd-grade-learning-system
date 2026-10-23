@@ -1,0 +1,23 @@
+<!-- The student's copy: the page opened with no Claude runtime at all (a child's iPad, or a static web host).
+     It must run from the embedded snapshot, hide every editing control, and keep progress in the browser. -->
+<script>
+/* no fakeClaude(): window.claude stays undefined */
+runTest(async()=>{
+  T_.ok($txt('#cover h1')==='نظام التعلّم للصف الثالث','the sample has no student name, so the cover shows the system name');
+  T_.ok(!$qa('[data-act=studentform],[data-act=studentpub],[data-act=oldform]').length,'no editing controls in the student copy');
+  $q('[data-act=go][data-id=math]').click();
+  T_.ok($qa('table.lessons tbody tr').length>=1,'the math lesson table should come from the snapshot');
+  $q('.ttbanner').click();$q('#overlay [data-act=ttmode][data-mode=practice]').click();
+  const sp=[...$q('#overlay .tteq').children];const ans=sp[2].id==='kans'?(+sp[4].textContent)/(+sp[0].textContent):(+sp[0].textContent)*(+sp[2].textContent);
+  String(ans).split('').forEach(k=>$q(`#overlay [data-act=ttkey][data-k="${k}"]`).click());$q('#overlay [data-act=ttkey][data-k=ok]').click();
+  let n=0;while($q('#overlay .tteq')&&n<30){n++;const s2=[...$q('#overlay .tteq').children];const a2=s2[2].id==='kans'?(+s2[4].textContent)/(+s2[0].textContent):(+s2[0].textContent)*(+s2[2].textContent);String(a2).split('').forEach(k=>$q(`#overlay [data-act=ttkey][data-k="${k}"]`).click());$q('#overlay [data-act=ttkey][data-k=ok]').click();if($q('#pnext'))$q('#pnext').click()}
+  let saved=null;try{saved=JSON.parse(localStorage.getItem('nay-progress')||'{}').tt}catch(e){}
+  T_.ok(saved&&Object.keys(saved.facts||{}).length>0,'times-table progress should be kept in the browser');
+  $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=close]').click();
+  $q('table.lessons [data-act=open][data-id=sample-math-game]').click();
+  T_.ok($qa('#overlay .choice').length>0,'the sample game should open');
+  $q('[data-act=close]').click();$q('[data-act=go][data-id=""]').click();$q('[data-act=go][data-id=english]').click();
+  T_.ok($qa('.libtile').length===3,'the English library should show its three tiles');
+  T_.ok($qa('[data-act=dict]').length>=1,'the Long O dictation trainer should be available');
+});
+</script>

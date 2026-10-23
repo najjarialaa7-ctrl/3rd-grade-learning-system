@@ -1,0 +1,28 @@
+<!-- Student profile: the name shows on the cover, in the title and in Arabic praise, and the parent can edit it.
+     Run with #named for a profile, or without a hash for a notebook that has no name yet. -->
+<script>
+const named=location.hash==='#named';
+fakeClaude({weeks:[],lessons:[{id:'a1',week:'',subject:'arabic',order:1,period:'1',title:'Test'}],
+  items:[{id:'ga',kind:'game',subject:'arabic',lesson:'a1',title:'لعبة',lang:'ar',createdAt:'2026-10-20T00:00:00Z',rounds:[{type:'choice',q:'ضدّ كبير؟',choices:['صغير','طويل'],answer:'صغير'},{type:'tf',q:'سؤال',answer:true},{type:'tf',q:'سؤال',answer:true}]}],
+  tables:[2]},{settings:named?{student:{ar:'سارة',en:'Sara',gender:'f',year:'2026–2027'}}:{}});
+runTest(async()=>{
+  if(named){
+    T_.ok($txt('#cover h1')==='دفتر سارة'&&document.title==='دفتر سارة','the cover and title should use the name');
+    T_.ok($txt('.label div span')==='سارة','the label should show the name');
+    $q('[data-act=go][data-id=arabic]').click();
+    const said=new Set();
+    for(let i=0;i<30;i++){$q('table.lessons [data-act=open][data-id=ga]').click();$qa('#overlay .choice').find(b=>b.textContent.trim()==='صغير').click();said.add($txt('#pfeed'));$q('[data-act=close]').click()}
+    T_.ok([...said].some(s=>s.includes('يا سارة')),'Arabic praise should use the name');
+    $q('[data-act=go][data-id=""]').click();
+    $q('[data-act=studentform]').click();
+    $q('#fStudent [name=ar]').value='ليان';$q('#fStudent [name=en]').value='Layan';$q('#fStudent').requestSubmit();await wait(50);
+    const w=window.__writes.filter(x=>x[0]==='settings/main').pop();
+    T_.ok(w&&w[1].student.ar==='ليان'&&w[1].student.en==='Layan','the edited name should be saved');
+    T_.ok($txt('#cover h1')==='دفتر ليان','the cover should update right away');
+  }else{
+    T_.ok($txt('#cover h1')==='نظام التعلّم للصف الثالث','without a name the cover shows the system name');
+    T_.ok($txt('.label div span')==='—','without a name the label shows a dash');
+    T_.ok($qa('[data-act=studentform]').length===1,'the parent should see the edit button');
+  }
+});
+</script>

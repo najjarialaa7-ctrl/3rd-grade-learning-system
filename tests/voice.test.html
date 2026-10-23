@@ -1,0 +1,27 @@
+<!-- Reading voice: natural voices first, novelty voices hidden, the picker previews and remembers a choice.
+     Run with #ios, #win or #edge to fake that device's voice list. -->
+<script>
+const LISTS={
+ ios:[['Albert','en-US',true],['Bad News','en-US',true],['Bubbles','en-US',true],['Samantha','en-US',true],['Daniel','en-GB',true],['Ava (Premium)','en-US',true],['Majed','ar-SA',true],['Zarvox','en-US',true]],
+ win:[['Microsoft George - English (United Kingdom)','en-GB',true],['Microsoft Naayf - Arabic (Saudi)','ar-SA',true],['Microsoft Hazel - English (United Kingdom)','en-GB',true],['Microsoft David - English (United States)','en-US',true],['Microsoft Zira - English (United States)','en-US',true]],
+ edge:[['Microsoft David - English (United States)','en-US',true],['Microsoft Guy Online (Natural) - English (United States)','en-US',false],['Microsoft Ava Online (Natural) - English (United States)','en-US',false],['Microsoft Jenny Online (Natural) - English (United States)','en-US',false],['Microsoft Zariyah Online (Natural) - Arabic (Saudi Arabia)','ar-SA',false]]};
+const which=location.hash.slice(1)||'ios';
+window.__voices=LISTS[which].map(([name,lang,local])=>({name,lang,localService:local,default:false,voiceURI:name}));
+const BEST={ios:'Ava (Premium)',win:'Microsoft Zira - English (United States)',edge:'Microsoft Ava Online (Natural) - English (United States)'};
+fakeClaude({weeks:[],lessons:[],items:[],tables:[2]});
+runTest(async()=>{
+  $q('[data-act=voice]').click();await wait(900);
+  const en=$qa('#modal input[name=v_en]');
+  T_.ok(en.length>0,'the picker should list English voices');
+  T_.ok(en[0].value===BEST[which]&&en[0].checked,'the best voice should be first and chosen: expected '+BEST[which]+', got '+(en[0]&&en[0].value));
+  T_.ok(!en.some(i=>/Albert|Bad News|Bubbles|Zarvox/.test(i.value)),'novelty voices should be hidden');
+  T_.ok(which==='win'?!!$q('#modal .vtip'):!$q('#modal .vtip'),'the tip about robotic voices should show only when no natural voice exists');
+  $qa('#modal [data-act=vtry][data-lang=en]')[1].click();await wait(30);
+  const second=en[1].value;
+  T_.ok(window.__said.length&&window.__said[window.__said.length-1].voice===second,'the preview should use the voice tapped');
+  en[1].checked=true;$q('#modal input[name=rate][value="0.75"]').checked=true;$q('#fVoice').requestSubmit();await wait(30);
+  $q('[data-act=go][data-id=math]').click();$q('.ttbanner').click();$q('#overlay [data-act=ttlearn][data-n="2"]').click();$q('#overlay [data-act=ttfact][data-b="3"]').click();await wait(30);
+  const last=window.__said[window.__said.length-1];
+  T_.ok(last&&last.voice===second&&last.rate===0.75,'the saved voice and speed should be used afterwards');
+});
+</script>

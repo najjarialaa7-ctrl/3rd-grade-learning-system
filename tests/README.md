@@ -1,0 +1,24 @@
+# Tests
+
+Each `*.test.html` file checks one feature of the real page. To run them all:
+
+```
+./scripts/run-tests.ps1
+```
+
+The runner puts four things together into one page: `_harness.js`, the sample snapshot (`window.__SAMPLE`), the test file, and `app/learning-system.html`. It opens that page in headless Edge (or Chrome) with virtual time, so timers such as the one-minute race finish at once, and reads the `data-result` attribute the test leaves on `<html>`: `PASS`, or `FAIL:` followed by the reasons. Any JavaScript error counts as a failure.
+
+`_harness.js` provides:
+- `fakeClaude(snapshot, {settings, publish})`: an in-memory database and a signed-in parent. Writes are recorded in `window.__writes`. If no fake runtime is set up, the page runs as the student copy;
+- a fake speech engine: the voices come from `window.__voices`, and what was said is in `window.__said`;
+- `T_.ok(condition, message)`, `$q`, `$qa`, `$txt`, `wait(ms)` and `runTest(async () => { … })`.
+
+| Test | Checks |
+|---|---|
+| `picture-guide` | Every diagram type draws, for math and English, and the library shows the cards |
+| `tutor` | The nudge, then the explanation with its picture, the fix-it round, the sheet's two checks, and the Arabic reasons |
+| `times-tables` | All five trainer modes, editing the tables, and saving progress |
+| `voice` (`#ios`, `#win`, `#edge`) | How voices are ranked, that novelty voices are hidden, the preview, and the saved choice and speed |
+| `profile` (`#named`, plain) | The name on the cover and in the praise, editing it, and the page with no name |
+| `student-copy` | The page with no runtime: the snapshot data, no editing controls, and progress kept in the browser |
+| `student-copy-publish` | The page rebuilds itself with a full snapshot |

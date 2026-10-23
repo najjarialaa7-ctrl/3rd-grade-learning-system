@@ -1,0 +1,44 @@
+<!-- Tutor feedback in games and practice sheets: a nudge first, then the answer with its explanation and picture,
+     the fix-it round, and the Arabic reasons for wrong choices. Uses the sample data. -->
+<script>
+fakeClaude(window.__SAMPLE);
+runTest(async()=>{
+  const S=window.__SAMPLE,item=id=>S.items.find(i=>i.id===id);
+  const go=id=>{const h=$q('[data-act=go][data-id=""]');if(h)h.click();$q(`[data-act=go][data-id=${id}]`).click()};
+  const open=id=>{const b=$q(`table.lessons [data-act=open][data-id="${id}"]`);T_.ok(b,'no table button for '+id);b.click()};
+  const answer=r=>{
+    if(r.type==='choice')$qa('#overlay .choice').find(b=>b.textContent.trim()===r.answer).click();
+    else if(r.type==='tf')$q(`#overlay [data-act=pick][data-k="${r.answer?0:1}"]`).click();
+    else if(r.type==='type'){$q('#pin').value=r.answer.split('|')[0];$q('#ptype').requestSubmit()}
+    else r.pairs.forEach((p,k)=>{$q(`#overlay [data-act=mleft][data-k="${k}"]`).click();$q(`#overlay [data-act=mright][data-k="${k}"]`).click()});
+  };
+  // Game: two slips on the first round, then the fix-it round
+  go('math');open('sample-math-game');
+  const g=item('sample-math-game');const pick=t=>$qa('#overlay .choice').find(b=>b.textContent.trim()===t).click();
+  pick('7');
+  T_.ok($txt('#pfeed').includes('3 + 4 = 7'),'first slip should explain why 7 is wrong');
+  T_.ok($q('#pnext').hidden,'after a first slip the round should stay open');
+  pick('14');
+  T_.ok($qa('#pfeed .tutor.full').length===1,'second slip should show the full explanation');
+  T_.ok($qa('#pfeed .tpic svg').length>0,'the explanation should include the picture');
+  $q('#pnext').click();
+  for(let i=1;i<g.rounds.length;i++){answer(g.rounds[i]);await wait(5);$q('#pnext').click();await wait(5)}
+  T_.ok($q('#overlay .fixintro'),'the fix-it round should be offered');
+  $q('[data-act=fixgo]').click();answer(g.rounds[0]);$q('#pnext').click();
+  T_.ok(/1 of 1/.test($txt('#overlay .fixdone')),'the fix-it result should show 1 of 1');
+  $q('[data-act=close]').click();
+  // Sheet: nudge on the first check, answer on the second
+  go('math');open('sample-math-sheet');
+  T_.ok($qa('#overlay .hintbtn').length===12,'every sheet question should have a hint button');
+  $q('#q0-0').value='7';$q('[data-act=scheck]').click();
+  T_.ok($txt('li[data-key="0-0"] .shelp').includes('4 + 3 = 7'),'first check should give the reason');
+  T_.ok(!$qa('li[data-key="0-0"] .tutor.full').length,'first check should not show the answer yet');
+  $q('[data-act=scheck]').click();
+  T_.ok($qa('li[data-key="0-0"] .tutor.full').length===1,'second check should show the answer and why');
+  $q('[data-act=close]').click();
+  // Arabic game: the reason for a wrong choice, in Arabic
+  go('arabic');open('sample-ar-game');
+  pick('طويل');
+  T_.ok($txt('#pfeed').includes('عكسها «قصير»'),'Arabic reason for the wrong choice should show');
+});
+</script>

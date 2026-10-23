@@ -1,0 +1,11 @@
+# Personal data exports and personal builds never go in the repository
+private/
+
+# Local test output
+*.run.html
+run-*.html
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

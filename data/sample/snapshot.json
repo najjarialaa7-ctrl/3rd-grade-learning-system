@@ -1,0 +1,620 @@
+{"v":1,"at":"2026-10-23T00:00:00.000Z","nexUrl":"","tables":[0,1,2,3,4,5,10],"student":null,
+"weeks":[{"id":"sample-week","weekOf":"2026-10-18","title":"أسبوع تجريبي","notes":{"math":"جدول الضرب: × 3 و × 4.\nالواجب: ورقة التدريب.","science":"دورة حياة النبات.","english":"Phonics: Long O. Grammar: Commas.\nإملاء: boat, coat, road, toe, bone, note, slow, snow","arabic":"الأضداد.\nإملاء: ذَهَبَتِ البِنْتُ إلى المَدْرَسَةِ مُبَكِّرَةً.","islamic":"","computer":""},"reminders":["إملاء إنجليزي: 8 كلمات Long O","إملاء عربي: جملة قصيرة"],"createdAt":"2026-10-17T12:00:00.000Z"}],
+"lessons":[
+{"id":"sample-math-1","week":"sample-week","weekOf":"2026-10-18","subject":"math","order":1,"period":"الحصة 1","title":"Multiply by 3 and by 4","pages":"","homework":"ورقة التدريب","assess":"","assessType":""},
+{"id":"sample-en-1","week":"sample-week","weekOf":"2026-10-18","subject":"english","order":1,"period":"الحصة 2","title":"Phonics: Long O","pages":"","homework":"","assess":"boat, coat, road, toe, bone, note, slow, snow","assessType":"إملاء","etype":"phonics"},
+{"id":"sample-en-2","week":"sample-week","weekOf":"2026-10-18","subject":"english","order":2,"period":"الحصة 3","title":"Grammar: Commas","pages":"","homework":"","assess":"","assessType":"","etype":"grammar"},
+{"id":"sample-ar-1","week":"sample-week","weekOf":"2026-10-18","subject":"arabic","order":1,"period":"الحصة 1","title":"الأضداد","pages":"","homework":"","assess":"ذَهَبَتِ البِنْتُ إلى المَدْرَسَةِ مُبَكِّرَةً.","assessType":"إملاء"},
+{"id":"sample-sci-1","week":"sample-week","weekOf":"2026-10-18","subject":"science","order":1,"period":"الحصة 1","title":"Life cycle of a plant","pages":"","homework":"","assess":"","assessType":""}
+],
+"items":[
+{"id": "sample-math-game", "createdAt": "2026-10-17T10:00:00.000Z",
+  "example": true,
+  "kind": "game",
+  "lang": "en",
+  "rounds": [
+    {
+      "answer": "12",
+      "choices": [
+        "7",
+        "12",
+        "14",
+        "10"
+      ],
+      "hint": "3 groups of 4. Count by 4s three times.",
+      "pic": {
+        "cols": 4,
+        "label": "3 rows of 4",
+        "rows": 3,
+        "type": "array"
+      },
+      "q": "3 × 4 = ?",
+      "type": "choice",
+      "why": "3 × 4 = 12: 4, 8, 12.",
+      "wrong": {
+        "7": "3 + 4 = 7. Here we multiply.",
+        "10": "Count again: 4, 8, 12.",
+        "14": "Count again: 4, 8, 12."
+      }
+    },
+    {
+      "answer": "10",
+      "choices": [
+        "7",
+        "10",
+        "12"
+      ],
+      "hint": "Count by 2s five times.",
+      "pic": {
+        "each": 2,
+        "groups": 5,
+        "item": "apple",
+        "label": "5 groups of 2",
+        "type": "groups"
+      },
+      "q": "5 groups of 2 make how many?",
+      "type": "choice",
+      "why": "5 groups of 2 = 10: 2, 4, 6, 8, 10.",
+      "wrong": {
+        "7": "5 + 2 = 7. But we have 5 groups of 2.",
+        "12": "That is 6 groups of 2. Count again: 2, 4, 6, 8, 10."
+      }
+    },
+    {
+      "answer": true,
+      "hint": "If you turn an array around, does the number of dots change?",
+      "pic": {
+        "cols": 6,
+        "label": "3 rows of 6 is the same as 6 rows of 3",
+        "rows": 3,
+        "type": "array"
+      },
+      "q": "6 × 3 is the same as 3 × 6.",
+      "type": "tf",
+      "why": "True. You can multiply in any order: both are 18."
+    },
+    {
+      "answer": "14",
+      "hint": "Double 7.",
+      "q": "7 × 2 = ?",
+      "type": "type",
+      "why": "7 × 2 means 7 + 7 = 14.",
+      "wrong": {
+        "9": "7 + 2 = 9. Here we multiply: 7 + 7 = 14."
+      }
+    },
+    {
+      "hint": "Start with the one you know best.",
+      "pairs": [
+        [
+          "2 × 6",
+          "12"
+        ],
+        [
+          "4 × 5",
+          "20"
+        ],
+        [
+          "3 × 3",
+          "9"
+        ],
+        [
+          "8 × 2",
+          "16"
+        ]
+      ],
+      "q": "Match each problem to its answer",
+      "type": "match",
+      "why": "2 × 6 = 12, 4 × 5 = 20, 3 × 3 = 9, 8 × 2 = 16."
+    },
+    {
+      "answer": "6 × 4",
+      "choices": [
+        "6 × 4",
+        "5 × 4",
+        "7 × 3",
+        "4 × 4"
+      ],
+      "hint": "Count by 4s: 4, 8, 12, 16, 20, 24. How many 4s?",
+      "q": "Which one equals 24?",
+      "type": "choice",
+      "why": "6 × 4 = 24.",
+      "wrong": {
+        "4 × 4": "4 × 4 = 16.",
+        "5 × 4": "5 × 4 = 20.",
+        "7 × 3": "7 × 3 = 21."
+      }
+    },
+    {
+      "answer": "27",
+      "hint": "Try 10 × 3, then take away one 3.",
+      "q": "9 × 3 = ?",
+      "type": "type",
+      "why": "9 × 3 = 27. 10 × 3 = 30, and 30 − 3 = 27.",
+      "wrong": {
+        "12": "9 + 3 = 12. Here we multiply: 27."
+      }
+    },
+    {
+      "answer": false,
+      "hint": "What is any number times 0?",
+      "q": "10 × 0 = 10",
+      "type": "tf",
+      "why": "False. Any number times 0 is 0, so 10 × 0 = 0."
+    },
+    {
+      "answer": "20",
+      "choices": [
+        "9",
+        "20",
+        "25",
+        "15"
+      ],
+      "hint": "4 groups of 5. Count by 5s four times.",
+      "pic": {
+        "each": 5,
+        "groups": 4,
+        "item": "apple",
+        "label": "4 bags of 5 apples",
+        "type": "groups"
+      },
+      "q": "There are 4 bags with 5 apples in each. How many apples?",
+      "type": "choice",
+      "why": "4 × 5 = 20: 5, 10, 15, 20.",
+      "wrong": {
+        "9": "4 + 5 = 9. We need 4 groups of 5.",
+        "15": "That is 3 bags of 5.",
+        "25": "That is 5 bags of 5."
+      }
+    },
+    {
+      "answer": "40",
+      "hint": "Count by 5s eight times.",
+      "q": "8 × 5 = ?",
+      "type": "type",
+      "why": "8 × 5 = 40: 5, 10, 15, 20, 25, 30, 35, 40.",
+      "wrong": {
+        "13": "8 + 5 = 13. Here we multiply: 40."
+      }
+    }
+  ],
+  "subject": "math",
+  "title": "Multiplication Facts", "lesson": "sample-math-1"},
+{"id": "sample-math-sheet", "createdAt": "2026-10-17T09:59:00.000Z",
+  "example": true,
+  "intro": "Answer each question. Use scrap paper if you need it.",
+  "kind": "sheet",
+  "lang": "en",
+  "sections": [
+    {
+      "items": [
+        {
+          "answer": "12",
+          "hint": "4 groups of 3: 3, 6, 9, …",
+          "q": "4 × 3 =",
+          "type": "type",
+          "why": "4 × 3 = 12.",
+          "wrong": {
+            "7": "4 + 3 = 7. Here we multiply."
+          }
+        },
+        {
+          "answer": "30",
+          "hint": "Count by 5s six times.",
+          "q": "6 × 5 =",
+          "type": "type",
+          "why": "6 × 5 = 30: 5, 10, 15, 20, 25, 30.",
+          "wrong": {
+            "11": "6 + 5 = 11. Here we multiply."
+          }
+        },
+        {
+          "answer": "28",
+          "hint": "Double 7, then double again.",
+          "q": "7 × 4 =",
+          "type": "type",
+          "why": "7 × 4 = 28. Double 7 is 14, and double 14 is 28.",
+          "wrong": {
+            "11": "7 + 4 = 11. Here we multiply."
+          }
+        },
+        {
+          "answer": "18",
+          "hint": "Double 9.",
+          "q": "9 × 2 =",
+          "type": "type",
+          "why": "9 × 2 = 9 + 9 = 18.",
+          "wrong": {
+            "11": "9 + 2 = 11. Here we multiply."
+          }
+        }
+      ],
+      "title": "A. Multiply"
+    },
+    {
+      "items": [
+        {
+          "answer": "4",
+          "hint": "How many 3s make 12?",
+          "pic": {
+            "each": 4,
+            "groups": 3,
+            "item": "dot",
+            "label": "12 shared into 3 groups: 4 in each",
+            "type": "groups"
+          },
+          "q": "12 ÷ 3 =",
+          "type": "type",
+          "why": "12 ÷ 3 = 4, because 4 × 3 = 12.",
+          "wrong": {
+            "9": "12 − 3 = 9. Here we divide: 12 ÷ 3 = 4.",
+            "36": "That is 12 × 3. Here we divide."
+          }
+        },
+        {
+          "answer": "4",
+          "hint": "How many 5s make 20?",
+          "q": "20 ÷ 5 =",
+          "type": "type",
+          "why": "20 ÷ 5 = 4, because 4 × 5 = 20.",
+          "wrong": {
+            "15": "20 − 5 = 15. Here we divide."
+          }
+        },
+        {
+          "answer": "3",
+          "choices": [
+            "2",
+            "3",
+            "4"
+          ],
+          "hint": "Which number times 6 makes 18?",
+          "q": "18 ÷ 6 = ?",
+          "type": "choice",
+          "why": "18 ÷ 6 = 3, because 3 × 6 = 18.",
+          "wrong": {
+            "2": "2 × 6 = 12, not 18.",
+            "4": "4 × 6 = 24, not 18."
+          }
+        },
+        {
+          "answer": true,
+          "hint": "Check: 5 × 3 = ?",
+          "q": "15 ÷ 3 = 5",
+          "type": "tf",
+          "why": "True. 5 × 3 = 15, so 15 ÷ 3 = 5."
+        }
+      ],
+      "title": "B. Divide"
+    },
+    {
+      "items": [
+        {
+          "answer": "18|18 pencils",
+          "hint": "3 boxes, each with 6. That is 3 groups of 6.",
+          "pic": {
+            "each": 6,
+            "groups": 3,
+            "item": "dot",
+            "label": "3 boxes of 6 pencils",
+            "type": "groups"
+          },
+          "q": "Sara has 3 boxes with 6 pencils in each box. How many pencils does she have?",
+          "type": "type",
+          "why": "3 × 6 = 18 pencils.",
+          "wrong": {
+            "9": "3 + 6 = 9. Each box has 6, so multiply: 3 × 6 = 18."
+          }
+        },
+        {
+          "answer": "6|6 cookies",
+          "hint": "Share 24 into 4 equal groups.",
+          "q": "24 cookies are shared equally by 4 friends. How many cookies does each friend get?",
+          "type": "type",
+          "why": "24 ÷ 4 = 6, because 4 × 6 = 24.",
+          "wrong": {
+            "20": "24 − 4 = 20. Here we share equally: 24 ÷ 4 = 6."
+          }
+        },
+        {
+          "answer": "5 × 4",
+          "choices": [
+            "5 + 4",
+            "5 × 4",
+            "5 − 4"
+          ],
+          "hint": "Rows with the same number in each means multiply.",
+          "pic": {
+            "cols": 4,
+            "label": "5 rows of 4 chairs",
+            "rows": 5,
+            "type": "array"
+          },
+          "q": "Which number sentence shows 5 rows of 4 chairs?",
+          "type": "choice",
+          "why": "5 rows of 4 is 5 × 4 = 20 chairs.",
+          "wrong": {
+            "5 + 4": "Adding gives 9, but there are 5 rows of 4.",
+            "5 − 4": "We do not take away. We have 5 rows of 4."
+          }
+        },
+        {
+          "answer": true,
+          "hint": "Multiplying and dividing are one fact family.",
+          "pic": {
+            "a": 7,
+            "b": 3,
+            "label": "One family, four facts",
+            "op": "x",
+            "type": "factfamily"
+          },
+          "q": "If 7 × 3 = 21, then 21 ÷ 3 = 7.",
+          "type": "tf",
+          "why": "True. 7 × 3 = 21, so 21 ÷ 3 = 7."
+        }
+      ],
+      "title": "C. Word problems"
+    }
+  ],
+  "subject": "math",
+  "title": "Multiply and Divide", "lesson": "sample-math-1"},
+{"id": "sample-en-longo-visual", "cards": [
+    {
+      "center": "oa",
+      "label": "The oa family: o and a work together to say long o.",
+      "type": "family",
+      "words": [
+        "coat",
+        "toad",
+        "float",
+        "coast",
+        "coal",
+        "soak"
+      ]
+    },
+    {
+      "groups": [
+        {
+          "name": "o",
+          "words": [
+            "no",
+            "sold",
+            "gold",
+            "scold"
+          ]
+        },
+        {
+          "name": "o_e",
+          "words": [
+            "vote",
+            "bone",
+            "note",
+            "slope",
+            "broke"
+          ]
+        },
+        {
+          "name": "ow",
+          "words": [
+            "low",
+            "slow",
+            "show"
+          ]
+        },
+        {
+          "name": "oe",
+          "words": [
+            "toe",
+            "foe"
+          ]
+        }
+      ],
+      "label": "The other four outfits of long o.",
+      "type": "sort"
+    },
+    {
+      "label": "In o_e words, the e is silent. It makes the o say its name.",
+      "silent": [
+        3
+      ],
+      "sounds": [
+        "b",
+        "ō",
+        "n"
+      ],
+      "type": "tiles",
+      "word": "bone"
+    },
+    {
+      "label": "Add e at the end and the short o becomes a long o.",
+      "mark": "add a silent e",
+      "pairs": [
+        [
+          "not",
+          "note"
+        ],
+        [
+          "rod",
+          "rode"
+        ]
+      ],
+      "type": "change"
+    },
+    {
+      "bad": "I road my bike down the rode.",
+      "focus": "ro",
+      "good": "I rode my bike down the road.",
+      "label": "Same sound, different spelling and meaning: rode (went) and road (street).",
+      "type": "compare"
+    }
+  ],
+  "createdAt": "2026-10-19T19:30:00.000Z",
+  "intro": "Long o says its own name, and it can wear five different outfits!",
+  "kind": "visual",
+  "lang": "en",
+  "lesson": "sample-en-1",
+  "subject": "english",
+  "title": "Long O: five ways to spell it"
+},
+{"id": "sample-en-commas-rule", "createdAt": "2026-10-19T19:30:00.000Z",
+  "examples": [
+    {
+      "note": "Comma between the day and the year",
+      "ok": true,
+      "s": "My birthday is June 3, 2018."
+    },
+    {
+      "note": "Commas between the parts of the address",
+      "ok": true,
+      "s": "They live at 8 Lake Street, Miami, Florida."
+    },
+    {
+      "note": "Commas in a list of three things",
+      "ok": true,
+      "s": "I packed pens, books, and a snack."
+    },
+    {
+      "note": "Comma after the name",
+      "ok": true,
+      "s": "Sara, please open the door."
+    },
+    {
+      "note": "Comma after no",
+      "ok": true,
+      "s": "No, I am not tired."
+    },
+    {
+      "note": "Fix it: I like cats, dogs, and birds.",
+      "ok": false,
+      "s": "I like cats dogs and birds."
+    }
+  ],
+  "kind": "grammar",
+  "lang": "en",
+  "lesson": "sample-en-2",
+  "points": [
+    "Between the day and the year in a date",
+    "Between the parts of an address",
+    "Between three or more things in a list (not after the last one)",
+    "After the name of the person you talk to, and after yes or no at the start"
+  ],
+  "rule": "A comma is a tiny pause. It splits words apart so the reader understands the sentence.",
+  "subject": "english",
+  "tips": [
+    "Comma = take a tiny breath!",
+    "Count the things in your list: three or more need commas."
+  ],
+  "title": "Commas",
+  "words": [
+    {
+      "m": "a mark that looks like this: ,",
+      "w": "comma"
+    },
+    {
+      "m": "a list of three or more things",
+      "w": "series"
+    },
+    {
+      "m": "the day, month and year",
+      "w": "date"
+    }
+  ]
+},
+{"id": "sample-en-commas-visual", "cards": [
+    {
+      "bad": "I packed pens books and a snack.",
+      "focus": ",",
+      "good": "I packed pens, books, and a snack.",
+      "label": "Lists: a comma after each thing, but not after the last one.",
+      "type": "compare"
+    },
+    {
+      "blocks": [
+        "Month and day",
+        ",",
+        "Year"
+      ],
+      "example": [
+        "June 3",
+        ",",
+        "2018"
+      ],
+      "label": "Dates: a comma between the day and the year.",
+      "type": "formula"
+    },
+    {
+      "label": "Addresses: a comma between the street, the city and the state.",
+      "tokens": [
+        {
+          "t": "8 Lake Street",
+          "tag": ""
+        },
+        {
+          "t": ",",
+          "tag": "comma"
+        },
+        {
+          "t": "Miami",
+          "tag": ""
+        },
+        {
+          "t": ",",
+          "tag": "comma"
+        },
+        {
+          "t": "Florida",
+          "tag": ""
+        }
+      ],
+      "type": "sentence"
+    },
+    {
+      "label": "Talking to someone: a comma after their name.",
+      "tokens": [
+        {
+          "t": "Sara",
+          "tag": "noun"
+        },
+        {
+          "t": ",",
+          "tag": "comma"
+        },
+        {
+          "t": "please open the door.",
+          "tag": ""
+        }
+      ],
+      "type": "sentence"
+    },
+    {
+      "bad": "Yes I will help you.",
+      "focus": ",",
+      "good": "Yes, I will help you.",
+      "label": "Yes or no at the start: put a comma after it.",
+      "type": "compare"
+    }
+  ],
+  "createdAt": "2026-10-19T19:30:00.000Z",
+  "intro": "A comma is a tiny pause. Here are its four favourite places!",
+  "kind": "visual",
+  "lang": "en",
+  "lesson": "sample-en-2",
+  "subject": "english",
+  "title": "Where do commas go?"
+},
+{"id":"sample-ar-game","kind":"game","subject":"arabic","lesson":"sample-ar-1","title":"لعبة الأضداد","lang":"ar","example":true,"createdAt":"2026-10-17T12:00:00.000Z","rounds":[
+ {"type":"choice","q":"ما ضدّ كلمة «كبير»؟","choices":["صغير","طويل","جميل"],"answer":"صغير","hint":"الضدّ كلمة معناها عكس الكلمة.","why":"الكبير عكسه الصغير: الفيل كبير، والنملة صغيرة.","wrong":{"طويل":"«طويل» عكسها «قصير».","جميل":"«جميل» ليست عكس «كبير»."}},
+ {"type":"choice","q":"ما ضدّ كلمة «الليل»؟","choices":["النهار","القمر","النوم"],"answer":"النهار","hint":"متى تشرق الشمس؟","why":"الليل عكسه النهار: في النهار تشرق الشمس.","wrong":{"القمر":"القمر نراه في الليل، لكنه ليس ضدّه.","النوم":"ننام في الليل غالباً، لكن النوم ليس ضدّ الليل."}},
+ {"type":"tf","q":"ضدّ كلمة «سريع» هو «بطيء».","answer":true,"hint":"فكّري في الأرنب والسلحفاة.","why":"صح، الأرنب سريع والسلحفاة بطيئة."},
+ {"type":"type","q":"اكتبي ضدّ كلمة «فوق».","answer":"تحت|أسفل","hint":"إذا لم يكن الكتاب فوق الطاولة، فأين يكون؟","why":"«فوق» عكسها «تحت»: الكتاب فوق الطاولة، والحذاء تحتها.","wrong":{"يمين":"«يمين» عكسها «يسار»."}},
+ {"type":"match","q":"صِلي كل كلمة بضدّها","pairs":[["حارّ","بارد"],["مفتوح","مغلق"],["قريب","بعيد"],["سعيد","حزين"]],"hint":"ابدئي بالكلمة الأسهل.","why":"حارّ ضدّ بارد، ومفتوح ضدّ مغلق، وقريب ضدّ بعيد، وسعيد ضدّ حزين."},
+ {"type":"choice","q":"أيّ جملة فيها كلمتان متضادّتان؟","choices":["الباب مفتوح والنافذة مغلقة.","الباب مفتوح والنافذة مفتوحة.","الباب كبير والنافذة كبيرة."],"answer":"الباب مفتوح والنافذة مغلقة.","hint":"ابحثي عن كلمتين معناهما عكس بعضهما.","why":"«مفتوح» و«مغلقة» متضادّتان.","wrong":{"الباب مفتوح والنافذة مفتوحة.":"الكلمتان بالمعنى نفسه، فليستا متضادّتين.","الباب كبير والنافذة كبيرة.":"«كبير» و«كبيرة» بالمعنى نفسه."}}
+]},
+{"id":"sample-math-visual","kind":"visual","subject":"math","lesson":"sample-math-1","title":"Multiply by 4","lang":"en","example":true,"createdAt":"2026-10-17T12:00:00.000Z","intro":"Times 4 is easy: double the number, then double it again!","cards":[
+ {"type":"groups","groups":4,"each":3,"item":"apple","label":"4 bags with 3 apples in each bag."},
+ {"type":"array","rows":4,"cols":6,"label":"4 rows of 6 dots."},
+ {"type":"numberline","start":0,"step":4,"jumps":5,"label":"Skip count by 4s: jump 4 each time."},
+ {"type":"steps","steps":[{"do":"Double the number","ex":"6 + 6 = 12"},{"do":"Double it again","ex":"12 + 12 = 24"},{"do":"That is 4 times the number","ex":"4 × 6 = 24"}],"label":"The double-double trick."},
+ {"type":"factfamily","a":4,"b":6,"op":"x","label":"One fact family, four facts."}
+]}
+]}

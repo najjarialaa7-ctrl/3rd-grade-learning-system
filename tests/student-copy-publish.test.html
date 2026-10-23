@@ -1,0 +1,18 @@
+<!-- "Update the student's version": the page rebuilds its own HTML with the current data embedded.
+     Checks that the rebuilt page carries the app code and a snapshot with the lessons, tables and profile. -->
+<script>
+fakeClaude(window.__SAMPLE,{publish:true,settings:{student:{ar:'سارة',en:'Sara',gender:'f'}}});
+runTest(async()=>{
+  const b=$q('[data-act=studentpub]');
+  T_.ok(b&&b.textContent.includes('نسخة سارة'),'the button should name the student');
+  b.click();await wait(150);
+  const html=window.__published||'';
+  T_.ok(html.includes('<script id="appjs">')&&html.includes('<style id="css">'),'the rebuilt page should contain the app code and styles');
+  const m=/<script type="application\/json" id="snap">([\s\S]*?)<\/script>/.exec(html);
+  T_.ok(m,'the rebuilt page should contain a snapshot');
+  if(m){const s=JSON.parse(m[1]);
+    T_.ok(s.lessons.length===window.__SAMPLE.lessons.length,'the snapshot should hold every lesson');
+    T_.ok(s.items.every(i=>i.kind!=='photo'),'photos stay out of the snapshot');
+    T_.ok(Array.isArray(s.tables)&&s.student&&s.student.en==='Sara','the snapshot should carry the tables and the profile');}
+});
+</script>

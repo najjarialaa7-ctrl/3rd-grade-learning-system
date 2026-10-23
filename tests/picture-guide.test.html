@@ -1,0 +1,35 @@
+<!-- Picture guides: every diagram type draws, for math, grammar and phonics. -->
+<script>
+const VM={kind:'visual',subject:'math',lesson:'m3',title:'Multiply by 4',lang:'en',intro:'Four is double, then double again!',createdAt:'2026-10-19T08:00:00Z',cards:[
+ {type:'array',rows:4,cols:6,label:'4 rows of 6 dots'},{type:'groups',groups:4,each:3,item:'apple',label:'4 bags with 3 apples'},
+ {type:'numberline',start:0,step:4,jumps:5,label:'Skip count by 4s'},{type:'split',rows:4,cols:7,splitAt:5,label:'Break 7 into 5 and 2'},
+ {type:'factfamily',a:4,b:6,op:'x',label:'One family, four facts'},{type:'bar',parts:[{v:12,label:'Ali'},{v:8,label:'Sara'}],total:'?',label:'How many in all?'},
+ {type:'fraction',parts:4,shaded:3,label:'Three fourths'},{type:'placevalue',n:234,label:'234 in blocks'},
+ {type:'steps',steps:[{do:'Double the number',ex:'6 → 12'},{do:'Double it again',ex:'12 → 24'}],label:'The double-double trick'}]};
+const VE={kind:'visual',subject:'english',lesson:'e3',title:'Long O spellings',lang:'en',intro:'Long o wears five outfits!',createdAt:'2026-10-19T08:00:00Z',cards:[
+ {type:'sentence',tokens:[{t:'The children',tag:'noun'},{t:'play',tag:'verb'},{t:'outside.',tag:''}],label:'Parts of a sentence'},
+ {type:'change',pairs:[['child','children'],['rod','rode']],mark:'irregular!',label:'Words that change'},
+ {type:'formula',blocks:['noun','+ s','= plural'],example:['cat','+ s','= cats'],label:'Most nouns add s'},
+ {type:'compare',good:'I like apples, bananas, and grapes.',bad:'I like apples bananas and grapes.',focus:',',label:'Commas in a list'},
+ {type:'sort',groups:[{name:'oa',words:['boat','coat']},{name:'o_e',words:['bone','note']}],label:'Sort by spelling'},
+ {type:'tiles',word:'knit',silent:[0],sounds:['n','i','t'],label:'The k is silent'},
+ {type:'family',center:'oa',words:['boat','coat','road','soak','toad','float'],label:'The oa family'}]};
+fakeClaude({weeks:[{id:'w1',weekOf:'2026-10-18',title:'Week',notes:{},reminders:[]}],
+  lessons:[{id:'m3',week:'w1',subject:'math',order:1,period:'1',title:'Multiply by 4'},{id:'e3',week:'w1',subject:'english',order:1,period:'2',title:'Phonics: Long O',etype:'phonics'}],
+  items:[Object.assign({id:'vm'},VM),Object.assign({id:'ve'},VE),
+    {id:'ph',kind:'phonics',subject:'english',lesson:'e3',title:'Long O',lang:'en',rules:[{pattern:'oa',rule:'oa says long o',words:['boat']}],words:[{w:'boat',m:'a small ship',ar:'قارب'}],createdAt:'2026-10-19T08:00:00Z'}]});
+runTest(async()=>{
+  $q('[data-act=go][data-id=math]').click();
+  $q('table.lessons [data-act=open][data-id=vm]').click();
+  T_.ok($qa('#overlay figure.vcardx').length===9,'all 9 math diagrams should draw');
+  T_.ok($qa('#overlay .veq').map(e=>e.textContent).join(' ').includes('4 × 6 = 24'),'the array equation should be computed');
+  $q('[data-act=close]').click();$q('[data-act=go][data-id=""]').click();$q('[data-act=go][data-id=english]').click();
+  $q('table.lessons [data-act=open][data-id=ve]').click();
+  T_.ok($qa('#overlay figure.vcardx').length===7,'all 7 English diagrams should draw');
+  T_.ok($qa('#overlay .vtile.gh').length===1,'the silent k should be a ghost tile');
+  T_.ok($qa('#overlay .vfw').length===6,'the word family should show 6 words');
+  $q('[data-act=close]').click();
+  $q('[data-act=lib][data-type=phonics]').click();
+  T_.ok($qa('#overlay .libentry .vcardx').length>=1,'the phonics library should show a picture card');
+});
+</script>
