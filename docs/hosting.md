@@ -19,14 +19,17 @@ The app only talks to the host through `window.claude.use(name)`. So a host must
 
 ## Recommended path
 
-### Phase 1: public demo (works today)
-Serve `app/learning-system.html` on **GitHub Pages**. With no runtime, it runs on the embedded sample data in read-only mode: the games, sheets, picture guides and trainers all work. This lets other families try it.
+### Phase 1: public demo (ready)
+Serve `app/learning-system.html` on **GitHub Pages**. With no runtime, it runs on the embedded sample data in read-only mode: the games, sheets, picture guides and trainers all work. A yellow label on the cover says it is a demo and links to this guide. The label appears because the sample snapshot carries `"demo": {"url": …}`. This lets other families try it.
 
-Steps:
-1. In the repository, open **Settings → Pages → Deploy from a branch → main / (root)**.
-2. Add a root `index.html` that redirects to `app/learning-system.html`, or copy the app there.
+The workflow `.github/workflows/pages.yml` copies the app to the site's `index.html` and deploys it whenever `app/` changes on `main`. The job is skipped while the repository is private, because GitHub Pages needs a **public** repository on the free plan, or a paid GitHub plan.
 
-This only works with a **public** repository or a paid GitHub plan.
+To switch it on:
+1. Make the repository public.
+2. Open **Settings → Pages → Build and deployment → Source: GitHub Actions**, or run `gh api -X POST repos/OWNER/REPO/pages -f build_type=workflow`.
+3. Run the workflow (**Actions → Deploy the demo to GitHub Pages → Run workflow**), or push a change to `app/`.
+
+The demo is then at `https://OWNER.github.io/REPO/`.
 
 ### Phase 2: a `window.claude` adapter
 Write a small script, `app/host-adapter.js`, that defines `window.claude.use()` with the same interface, backed by the chosen database, storage and Claude endpoint. The page itself barely changes: the same file then runs both as a Claude artifact and on our own site. This is the main engineering step.

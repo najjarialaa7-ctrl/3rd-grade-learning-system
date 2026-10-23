@@ -5,6 +5,7 @@
 runTest(async()=>{
   T_.ok($txt('#cover h1')==='نظام التعلّم للصف الثالث','the sample has no student name, so the cover shows the system name');
   T_.ok(!$qa('[data-act=studentform],[data-act=studentpub],[data-act=oldform]').length,'no editing controls in the student copy');
+  T_.ok($q('.demo-note a[href*="github.com"]'),'the sample data is marked as a demo, with a link to the guide');
   $q('[data-act=go][data-id=math]').click();
   T_.ok($qa('table.lessons tbody tr').length>=1,'the math lesson table should come from the snapshot');
   $q('.ttbanner').click();$q('#overlay [data-act=ttmode][data-mode=practice]').click();

@@ -1,4 +1,4 @@
-{"v":1,"at":"2026-10-23T00:00:00.000Z","nexUrl":"","tables":[0,1,2,3,4,5,10],"student":null,
+{"v":1,"at":"2026-10-23T00:00:00.000Z","nexUrl":"","tables":[0,1,2,3,4,5,10],"student":null,"demo":{"url":"https://github.com/najjarialaa7-ctrl/3rd-grade-learning-system#readme"},
 "weeks":[{"id":"sample-week","weekOf":"2026-10-18","title":"أسبوع تجريبي","notes":{"math":"جدول الضرب: × 3 و × 4.\nالواجب: ورقة التدريب.","science":"دورة حياة النبات.","english":"Phonics: Long O. Grammar: Commas.\nإملاء: boat, coat, road, toe, bone, note, slow, snow","arabic":"الأضداد.\nإملاء: ذَهَبَتِ البِنْتُ إلى المَدْرَسَةِ مُبَكِّرَةً.","islamic":"","computer":""},"reminders":["إملاء إنجليزي: 8 كلمات Long O","إملاء عربي: جملة قصيرة"],"createdAt":"2026-10-17T12:00:00.000Z"}],
 "lessons":[
 {"id":"sample-math-1","week":"sample-week","weekOf":"2026-10-18","subject":"math","order":1,"period":"الحصة 1","title":"Multiply by 3 and by 4","pages":"","homework":"ورقة التدريب","assess":"","assessType":""},

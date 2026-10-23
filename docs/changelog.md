@@ -5,6 +5,7 @@ The version number shows in the page footer («نسخة الدفتر N»).
 ## 16 (2026-10-23)
 - **Student profile.** The child's name, the address form (girl or boy) and the school year are now a setting (`settings.student`), edited from the cover label. They used to be written into the code. The page title, the cover, the praise and Claude's prompts all use the profile.
 - The project is packaged as **3rd Grade Learning System**, with sample data, documentation and browser tests.
+- A demo label on the cover when the page runs on sample data, and a GitHub Pages workflow for the public demo.
 
 ## 15 (2026-10-23)
 - **Reading voice.** Voices are ranked so that natural ones come first, and novelty voices are never used. A picker on the cover and in the reading screen previews each voice and saves the choice and speed per device.

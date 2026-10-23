@@ -45,7 +45,7 @@ The whole app is **one HTML file**: [app/learning-system.html](app/learning-syst
 |---|---|
 | As a **Claude artifact**, by the parent signed in to claude.ai | Everything: saved data, photo uploads, and Claude making the activities |
 | The same artifact link, opened by the child (no account) | The student copy: lessons, games, sheets and trainers, read-only; progress saved in the browser |
-| Any other web host, or opened from disk | The embedded copy only (a read-only demo) |
+| Any other web host, or opened from disk | The embedded copy only: a read-only demo, which GitHub Pages serves through `.github/workflows/pages.yml` |
 
 How the page is built, and how its modes work: [docs/architecture.md](docs/architecture.md). Plans for hosting it as a normal website: [docs/hosting.md](docs/hosting.md).
 

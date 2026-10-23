@@ -228,6 +228,9 @@ details.old li{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .fixicon{font-size:3rem;line-height:1}
 .fixdone{margin:4px 0 0;font-weight:700;color:var(--c)}
 
+.demo-note{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 10px;background:var(--star);color:#1A2340;border-radius:10px;padding:6px 12px;font-size:.88rem;font-weight:700}
+.demo-note a{color:inherit;display:inline-flex;align-items:center;gap:4px}
+.demo-note svg{width:14px;height:14px}
 .lbledit{all:unset;cursor:pointer;margin-inline-start:auto;font-size:.75rem;font-weight:700;color:var(--label-muted);border:1px dashed var(--label-line);border-radius:99px;padding:0 8px}
 .lbledit:hover,.lbledit:focus-visible{color:var(--label-ink);border-color:var(--label-ink)}
 /* reading voice picker */
@@ -612,7 +615,7 @@ details.oldweek .tablewrap{border:0;border-radius:0}
 <div class="overlay" id="overlay" hidden></div>
 <div class="modal" id="modal" hidden></div>
 <div class="toast" id="toast" role="status" hidden></div>
-<script type="application/json" id="snap">{"v":1,"at":"2026-10-23T00:00:00.000Z","nexUrl":"","tables":[0,1,2,3,4,5,10],"student":null,
+<script type="application/json" id="snap">{"v":1,"at":"2026-10-23T00:00:00.000Z","nexUrl":"","tables":[0,1,2,3,4,5,10],"student":null,"demo":{"url":"https://github.com/najjarialaa7-ctrl/3rd-grade-learning-system#readme"},
 "weeks":[{"id":"sample-week","weekOf":"2026-10-18","title":"أسبوع تجريبي","notes":{"math":"جدول الضرب: × 3 و × 4.\nالواجب: ورقة التدريب.","science":"دورة حياة النبات.","english":"Phonics: Long O. Grammar: Commas.\nإملاء: boat, coat, road, toe, bone, note, slow, snow","arabic":"الأضداد.\nإملاء: ذَهَبَتِ البِنْتُ إلى المَدْرَسَةِ مُبَكِّرَةً.","islamic":"","computer":""},"reminders":["إملاء إنجليزي: 8 كلمات Long O","إملاء عربي: جملة قصيرة"],"createdAt":"2026-10-17T12:00:00.000Z"}],
 "lessons":[
 {"id":"sample-math-1","week":"sample-week","weekOf":"2026-10-18","subject":"math","order":1,"period":"الحصة 1","title":"Multiply by 3 and by 4","pages":"","homework":"ورقة التدريب","assess":"","assessType":""},
@@ -1476,7 +1479,9 @@ function renderCover(){
     h+=`<button class="btn-cover" data-act="studentpub" title="${tx('الطالب يفتح الرابط نفسه من المتصفح بلا حساب Claude، ويرى الدروس كما كانت عند آخر تحديث.','The student opens the same link in a browser without a Claude account and sees the lessons as of the last update.')}">${stale?'<span class="dotnew" aria-hidden="true"></span>':''}${tx('تحديث ','Update ')}${esc(cn)}</button>`;
     h+=`<span class="sub" style="margin:0;font-size:.85rem">${SNAP&&SNAP.at?esc(cn)+': '+esc(fmtWhen(SNAP.at)):esc(cn)+tx(' لم تُنشر بعد',' is not published yet')}${stale&&SNAP?tx(' · فيها تغييرات جديدة',' · has new changes'):''}</span>`;
   }
-  if(S.student)h+=`<span class="sub" style="margin:0;font-size:.85rem">${tx('آخر تحديث: ','Last updated: ')}${esc(fmtWhen(SNAP.at))}</span>`;
+  const demo=S.student&&SNAP&&SNAP.demo;
+  if(demo){const u=safeUrl(SNAP.demo.url);h+=`<span class="demo-note">${tx('نسخة تجريبية ببيانات نموذجية: جرّبوا الألعاب والأوراق والمدرّبات.','A demo with sample data: try the games, sheets and trainers.')}${u?` <a href="${esc(u)}" target="_blank" rel="noopener">${tx('كيف تستخدمونه لطفلكم','How to use it for your child')} ${ICON.out}</a>`:''}</span>`}
+  else if(S.student)h+=`<span class="sub" style="margin:0;font-size:.85rem">${tx('آخر تحديث: ','Last updated: ')}${esc(fmtWhen(SNAP.at))}</span>`;
   else if(S.noDb)h+=`<span class="sub" style="margin:0">${tx('يلزم فتح الدفتر من حساب Claude لعرض الملفات المحفوظة.','Open the notebook from your Claude account to see saved files.')}</span>`;
   const k=kid();document.title=bookTitle();
   $('#cover').innerHTML=`<div><h1>${esc(bookTitle())}</h1>
