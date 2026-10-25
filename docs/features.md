@@ -5,6 +5,7 @@
 - The parent presses **Edit** on the label to set the child's name in Arabic and English, whether Claude should address a girl or a boy, and the school year. Without a name, the title reads «نظام التعلّم للصف الثالث» / *3rd Grade Learning System*.
 
 ## Weekly plan and lesson tables
+- Each subject page shows only: this week's note, this week's lesson table, and the older-lessons table (plus the times-tables banner in math and the library tiles in English). Every map, game, sheet and reading opens from its lesson row; a separate shelf appears only for an activity or photo that is not linked to any lesson.
 - The school's weekly plan, as photos or a PDF, is read by Claude (a PDF's pages are first drawn to images in the browser with pdf.js) into a short note per subject, the week's reminders, and a lesson table per subject: period, lesson, pages, homework, assessment.
 - Each lesson row has columns for its photos, its explanation (English: reading, rule card or phonics card), its map or picture guide, its practice sheet and its game. When a part is missing, the row offers a «اصنع» (Make) button.
 - **Older lessons:** every lesson that is not in this week's plan (past weeks, and lessons added without a plan with `week: ""`) sits in one table per subject, newest week first, with only what helps revision: the explanation or picture guide, the map, the sheet and the game. English is split into three sections: reading, grammar, and phonics with dictation (any lesson with a dictation goes there). Rows can be edited and deleted.

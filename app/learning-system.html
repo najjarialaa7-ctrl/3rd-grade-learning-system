@@ -1462,7 +1462,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:18,date:'2026-10-25'};
+const APP_VERSION={n:19,date:'2026-10-25'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -1715,26 +1715,21 @@ function lessonRow(l,first,k,total,opts){
 
 function renderSubject(s){
   const items=S.items.filter(i=>i.subject===s.id);
-  const games=items.filter(i=>i.kind==='game');
-  const sheets=items.filter(i=>i.kind==='sheet');
-  const photos=items.filter(i=>i.kind==='photo');
-  const outlines=items.filter(i=>i.kind==='outline');
-  const readings=items.filter(i=>i.kind==='reading');
+  /* Everything linked to a lesson opens from the lesson tables. The card shelves below only show what is
+     not linked to any lesson (so nothing becomes unreachable), and disappear when there is none. */
+  const linked=new Set(S.lessons.map(l=>l.id));
+  const loose=i=>!i.lesson||!linked.has(i.lesson);
+  const games=items.filter(i=>i.kind==='game'&&loose(i));
+  const sheets=items.filter(i=>i.kind==='sheet'&&loose(i));
+  const photos=items.filter(i=>i.kind==='photo'&&loose(i));
+  const outlines=items.filter(i=>i.kind==='outline'&&loose(i));
+  const readings=items.filter(i=>i.kind==='reading'&&loose(i));
   const files=items.filter(i=>i.kind==='file'||i.kind==='link');
   const w=S.weeks[0];const note=w?str(w.notes&&w.notes[s.id]):'';
   const loading=!S.loaded&&!S.noDb;
 
-  const dicts=lessonsFor(s.id).concat(freeFor(s.id)).map(l=>({l,d:dictOf(l)})).filter(x=>x.d);
   const W=['كلمة واحدة','كلمتان','كلمات','كلمة'];
-  const dictHtml=dicts.map(({l,d})=>{
-    const saved=(S.results['dict-'+l.id]||{}).words||{};const st=w=>Math.min(3,((saved[w]||{}).box)||0);
-    const done=d.words.filter(w=>st(w)>=3).length;
-    return `<article class="card dictcard"><span class="eyebrow">${tx('مدرّب الإملاء','Dictation trainer')}</span><h4 dir="auto">${esc(d.lang==='ar'?d.sentence:l.title)}</h4>
-      <div class="meta"><span>${cnt(d.words.length,W,'word','words')}</span><span>${tx('أزهرت','Flowers')} ${done} ${tx('من','of')} ${d.words.length}</span></div>
-      <div class="mini-garden" aria-hidden="true">${d.words.map(w=>plant(st(w))).join('')}</div>
-      <div class="acts"><button class="btn color" data-act="dict" data-id="${esc(l.id)}">${tx('ابدئي التدريب','Start practising')}</button></div></article>`;
-  }).join('');
-  const gameHtml=`<div class="cards">${dictHtml}${games.map(g=>{
+  const gameHtml=`<div class="cards">${games.map(g=>{
     const r=S.results[g.id];const n=Array.isArray(g.rounds)?g.rounds.length:0;
     const res=r?`<span class="mini-stars" aria-label="${tx('أفضل نتيجة','Best score')}">${[0,1,2].map(k=>star(k<bestStars(r.best||0))).join('')}</span><span>${tx('أفضل نتيجة','Best score')} ${Math.round(r.best||0)}%</span>`:`<span>${tx('لم تُلعب بعد','Not played yet')}</span>`;
     return `<article class="card game-card"><h4 dir="auto">${esc(g.title)}</h4>
@@ -1795,12 +1790,12 @@ function renderSubject(s){
     ${lessonTable(s)}
     ${s.id==='english'?libTiles():''}
     ${olderSection(s)}
-    ${s.id==='english'?shelf(tx('القراءة والكلمات','Reading and words'),readings.length,readingHtml,tx(`لكل درس يُقرأ نصه ${forKidAr()} بصوت مسموع، والكلمات المظللة بالأصفر في الكتاب تظهر بمعانيها وأمثلتها. يظهر هنا بعد رفع صور الدرس.`,`Each lesson can be read aloud to ${kidEn()}, and the words highlighted in yellow in the book appear with meanings and examples. They show here once lesson photos are uploaded.`)):''}
-    ${shelf(tx('مخططات الدروس','Lesson maps'),outlines.length,outlineHtml,tx('لا توجد مخططات بعد. المخطط ملخص للدرس في صفحة واحدة يُصنع من صور الدرس.','No lesson maps yet. A map is a one-page summary of a lesson, made from its photos.'))}
-    ${shelf(tx('ألعاب تفاعلية','Games'),games.length+dicts.length,gameHtml,tx('لا توجد ألعاب بعد. كل لعبة تُصنع من صور درس من دروس المادة.','No games yet. Each game is made from the photos of a lesson.'))}
-    ${shelf(tx('أوراق تدريب','Practice sheets'),sheets.length,sheetHtml,tx('لا توجد أوراق تدريب بعد. تُصنع من صور الدروس، وتُحلّ هنا أو تُنزَّل للطباعة.','No practice sheets yet. They are made from lesson photos, solved here or downloaded to print.'))}
-    ${S.db?shelf(tx('صور الدروس','Lesson photos'),photos.length,photoHtml,lessonEmpty):''}
-    ${S.db?shelf(tx('ملفات المدرسة والروابط','School files and links'),files.length,fileHtml,tx('ملفات المدرسة (PDF أو صور) وروابط الواجبات تُحفظ هنا.','School files (PDF or photos) and homework links are kept here.')):''}`}
+    ${readings.length?shelf(tx('قراءات غير مرتبطة بدرس','Readings not linked to a lesson'),readings.length,readingHtml,''):''}
+    ${outlines.length?shelf(tx('مخططات غير مرتبطة بدرس','Maps not linked to a lesson'),outlines.length,outlineHtml,''):''}
+    ${games.length?shelf(tx('ألعاب غير مرتبطة بدرس','Games not linked to a lesson'),games.length,gameHtml,''):''}
+    ${sheets.length?shelf(tx('أوراق غير مرتبطة بدرس','Sheets not linked to a lesson'),sheets.length,sheetHtml,''):''}
+    ${S.db&&photos.length?shelf(tx('صور غير مرتبطة بدرس','Photos not linked to a lesson'),photos.length,photoHtml,lessonEmpty):''}
+    ${S.db&&files.length?shelf(tx('ملفات المدرسة والروابط','School files and links'),files.length,fileHtml,''):''}`}
   </section>`;
 }
 

@@ -2,6 +2,9 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 19 (2026-10-25)
+- **No card shelves on subject pages.** Maps, games, practice sheets and readings now open only from the lesson tables (this week and older lessons), which keeps the page calm for the student. A shelf appears only for something not linked to any lesson, so nothing becomes unreachable; school files show only when there are some.
+
 ## 18 (2026-10-25)
 - **Older lessons in one table.** Past weeks and lessons added without a plan now sit in one table per subject, newest first, with the explanation, map, sheet and game, instead of a separate table plus a folding group per week. English is split into reading, grammar, and phonics with dictation.
 

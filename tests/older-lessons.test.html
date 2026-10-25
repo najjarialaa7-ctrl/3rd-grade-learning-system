@@ -2,7 +2,8 @@
      Math shows the picture guide, sheet and game; English is split into reading, grammar, and phonics with dictation. -->
 <script>
 const S0=window.__SAMPLE;
-fakeClaude(Object.assign({},S0,{weeks:S0.weeks.concat([{id:'next',weekOf:'2026-11-01',title:'Next week',notes:{},reminders:[]}])}));
+const LOOSE={id:'loose-game',kind:'game',subject:'science',title:'A game with no lesson',lang:'en',createdAt:'2026-10-20T00:00:00Z',rounds:[{type:'tf',q:'Plants need water.',answer:true},{type:'tf',q:'Frogs lay eggs.',answer:true},{type:'tf',q:'A seed is a frog.',answer:false}]};
+fakeClaude(Object.assign({},S0,{weeks:S0.weeks.concat([{id:'next',weekOf:'2026-11-01',title:'Next week',notes:{},reminders:[]}]),items:S0.items.concat([LOOSE])}));
 runTest(async()=>{
   $q('[data-act=go][data-id=math]').click();
   const mt=$q('.olderwrap table.lessons.older');
@@ -13,6 +14,7 @@ runTest(async()=>{
     T_.ok(mt.querySelector('[data-act=open][data-id=sample-math-visual]')&&mt.querySelector('[data-act=open][data-id=sample-math-game]'),'the row links the picture guide and the game');
   }
   T_.ok(!$qa('details.oldweek').length,'no folding week groups any more');
+  T_.ok(!$qa('section.subj .cards').length,'no card shelves when every activity belongs to a lesson');
   $q('[data-act=go][data-id=""]').click();$q('[data-act=go][data-id=english]').click();
   const et=$q('.olderwrap table.lessons.older');
   T_.ok(et,'English should show one older-lessons table');
@@ -21,5 +23,8 @@ runTest(async()=>{
     T_.ok(groups.length===2&&/القواعد/.test(groups[0])&&/الفونكس/.test(groups[1]),'English sections in order (the sample has grammar and phonics): '+groups.join(' / '));
     T_.ok(et.querySelector('[data-act=dict]'),'the Long O dictation trainer sits in the phonics section');
   }
+  /* An activity that belongs to no lesson must stay reachable: it gets its own small shelf. */
+  $q('[data-act=go][data-id=""]').click();$q('[data-act=go][data-id=science]').click();
+  T_.ok($q('section.subj .cards [data-act=play][data-id=loose-game]'),'a game with no lesson should still show on a shelf');
 });
 </script>
