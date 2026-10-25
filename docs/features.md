@@ -7,7 +7,7 @@
 ## Weekly plan and lesson tables
 - The school's weekly plan, as photos or a PDF, is read by Claude (a PDF's pages are first drawn to images in the browser with pdf.js) into a short note per subject, the week's reminders, and a lesson table per subject: period, lesson, pages, homework, assessment.
 - Each lesson row has columns for its photos, its explanation (English: reading, rule card or phonics card), its map or picture guide, its practice sheet and its game. When a part is missing, the row offers a «اصنع» (Make) button.
-- **Older lessons** (`week: ""`) can be added without a plan. Each subject page also keeps earlier weeks in folding groups. Rows can be edited, reordered and deleted.
+- **Older lessons:** every lesson that is not in this week's plan (past weeks, and lessons added without a plan with `week: ""`) sits in one table per subject, newest week first, with only what helps revision: the explanation or picture guide, the map, the sheet and the game. English is split into three sections: reading, grammar, and phonics with dictation (any lesson with a dictation goes there). Rows can be edited and deleted.
 - When new photos are added to a lesson that already has activities, everything is rebuilt from all of the photos. A row whose photos are newer than its activities shows «تحديث من كل الصور» (update from all photos).
 
 ## What Claude makes from lesson photos

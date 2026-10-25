@@ -43,7 +43,8 @@ $cases = @(
   @('profile.test.html', '', 6000),
   @('student-copy.test.html', '', 8000),
   @('student-copy-publish.test.html', '', 6000),
-  @('weekly-plan-pdf.test.html', '', 250000)
+  @('weekly-plan-pdf.test.html', '', 250000),
+  @('older-lessons.test.html', '', 6000)
 )
 $failed = 0
 foreach ($c in $cases) {

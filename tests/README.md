@@ -23,3 +23,4 @@ The runner puts four things together into one page: `_harness.js`, the sample sn
 | `student-copy` | The page with no runtime: the snapshot data, no editing controls, and progress kept in the browser |
 | `student-copy-publish` | The page rebuilds itself with a full snapshot |
 | `weekly-plan-pdf` | A PDF plan is drawn to page images and read; the notes and lesson rows are saved (needs the internet for pdf.js) |
+| `older-lessons` | Past lessons sit in one table per subject, newest first; English is split into reading, grammar, and phonics with dictation |

@@ -357,6 +357,11 @@ table.lessons td.hwcell{min-width:180px}
 table.lessons td.st{white-space:nowrap}
 .table-foot{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
 .table-foot .hint{margin:0;max-width:70ch}
+table.lessons tr.grp td{background:var(--tint2);font-family:var(--display);font-size:1.08rem;padding:8px 12px;border-top:2px solid var(--c)}
+table.lessons tr.grp .count{color:var(--muted);font-size:.85rem;font-weight:600;font-family:var(--body)}
+table.lessons.older td.per{color:var(--muted);font-size:.85rem}
+.olderown{margin-top:6px}
+@media (max-width:700px){table.lessons tr.grp{display:block;background:transparent;border:0;padding:0;margin:16px 0 6px}table.lessons tr.grp td{display:block;border-radius:10px}}
 @media (max-width:700px){
   .tablewrap{border:0;background:transparent;overflow:visible;border-radius:0}
   table.lessons,table.lessons tbody,table.lessons tr,table.lessons td{display:block;width:100%}
@@ -1457,7 +1462,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:17,date:'2026-10-25'};
+const APP_VERSION={n:18,date:'2026-10-25'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -1551,7 +1556,7 @@ function pastGroups(sid){
   S.weeks.forEach(wk=>{if(w&&wk.id===w.id)return;const ls=S.lessons.filter(l=>l.subject===sid&&l.week===wk.id).sort(byOrder);if(ls.length)out.push({w:wk,ls})});
   return out;
 }
-function olderCount(sid){return freeFor(sid).length+pastGroups(sid).reduce((t,g)=>t+g.ls.length,0)}
+function olderCount(sid){return olderLessons(sid).length}
 function lessonItems(lid,kind){return S.items.filter(i=>i.lesson===lid&&i.kind===kind)}
 function lessonImages(lid){
   const out=[];
@@ -1604,16 +1609,43 @@ function lessonTable(s){
   return `<section class="shelf">${head}${tableHtml(s,ls,false)}
     <div class="table-foot"><p class="hint">${tableHint()}</p>${addBtn}</div></section>`;
 }
-function olderSection(s){
-  const free=freeFor(s.id),groups=pastGroups(s.id),n=free.length+groups.reduce((t,g)=>t+g.ls.length,0);
-  const add=canEditData()?`<button class="btn small color" data-act="oldform" data-subject="${s.id}">${ICON.plus} ${tx('إضافة درس سابق','Add an older lesson')}</button>`:'';
-  let body='';
-  if(free.length)body+=`<h4 class="subhead">${tx('دروس أضفتها','Lessons you added')}</h4>${tableHtml(s,free,true)}`;
-  groups.forEach(g=>{body+=`<details class="oldweek"><summary><span dir="auto">${esc(weekTitle(g.w))}</span> · ${cnt(g.ls.length,['درس واحد','درسان','دروس','درساً'],'lesson','lessons')}</summary>${tableHtml(s,g.ls,false)}</details>`});
-  if(!n)body=`<p class="empty">${tx('هنا تُحفظ الدروس السابقة، أو أي درس يُضاف بلا خطة أسبوعية. تعمل بالطريقة نفسها: صور الدرس، ثم المخطط والورقة واللعبة.','Older lessons, or any lesson added without a weekly plan, live here. They work the same way: lesson photos, then the map, sheet and game.')}</p>`;
-  return `<section class="shelf"><div class="shelf-head"><h3>${tx('الدروس السابقة','Older lessons')}</h3><span class="count">${n}</span><span style="flex:1"></span>${add}</div>${body}</section>`;
+/* Older lessons: every lesson that is not in this week's plan (past weeks and lessons added without a plan),
+   newest first, in one table with only what helps revision: the explanation, the map, the sheet and the game.
+   English is split into reading, grammar, and phonics with dictation. */
+function olderLessons(sid){
+  const w=curWeek();
+  const dateOf=l=>{const x=S.weeks.find(y=>y.id===l.week);return str(x&&x.weekOf)||str(l.weekOf)};
+  /* Plan weeks first, newest week on top; lessons added without a plan (usually older) after them, in their own order. */
+  return S.lessons.filter(l=>l.subject===sid&&!(w&&l.week===w.id))
+    .sort((a,b)=>{const fa=!a.week,fb=!b.week;if(fa!==fb)return fa?1:-1;
+      return (fa?0:dateOf(b).localeCompare(dateOf(a)))||(a.week===b.week?0:String(a.week).localeCompare(String(b.week)))||(a.order||0)-(b.order||0)});
 }
-function lessonRow(l,first,k,total){
+function whenLabel(l){
+  if(l.week){const x=S.weeks.find(y=>y.id===l.week);const t=x?weekTitle(x):'';return t.split('·')[0].trim()||fmtDay(l.weekOf)||'—'}
+  return perLabel(l.period)||'—';
+}
+const egroup=l=>{const e=etype(l);if(e==='grammar')return 'grammar';if(e==='phonics'||dictOf(l))return 'phonics';return 'reading'};
+function olderTable(s,ls){
+  const en=s.id==='english',cols=en?6:5;
+  const head=`<thead><tr><th>${tx('الأسبوع','Week')}</th><th>${tx('الدرس','Lesson')}</th>${en?`<th>${tx('الشرح','Explanation')}</th>`:''}<th>${mapHead(s.id)}</th><th>${tx('ورقة تدريب','Sheet')}</th><th>${tx('لعبة','Game')}</th></tr></thead>`;
+  const row=l=>lessonRow(l,tx('الأسبوع','Week'),0,1,{older:true,when:whenLabel(l)});
+  let body='';
+  if(en){
+    [['reading',tx('القراءة','Reading')],['grammar',tx('القواعد · Grammar','Grammar')],['phonics',tx('الفونكس والإملاء','Phonics and dictation')]].forEach(([g,label])=>{
+      const part=ls.filter(l=>egroup(l)===g);if(!part.length)return;
+      body+=`<tr class="grp"><td colspan="${cols}"><b>${label}</b> <span class="count">${part.length}</span></td></tr>`+part.map(row).join('');
+    });
+  }else body=ls.map(row).join('');
+  return `<div class="tablewrap"><table class="lessons older">${head}<tbody>${body}</tbody></table></div>`;
+}
+function olderSection(s){
+  const ls=olderLessons(s.id),n=ls.length;
+  const add=canEditData()?`<button class="btn small color" data-act="oldform" data-subject="${s.id}">${ICON.plus} ${tx('إضافة درس سابق','Add an older lesson')}</button>`:'';
+  let body=n?olderTable(s,ls):'';
+  if(!n)body=`<p class="empty">${tx('هنا تُحفظ الدروس السابقة، أو أي درس يُضاف بلا خطة أسبوعية. تعمل بالطريقة نفسها: صور الدرس، ثم المخطط والورقة واللعبة.','Older lessons, or any lesson added without a weekly plan, live here. They work the same way: lesson photos, then the map, sheet and game.')}</p>`;
+  return `<section class="shelf olderwrap"><div class="shelf-head"><h3>${tx('الدروس السابقة','Older lessons')}</h3><span class="count">${n}</span><span style="flex:1"></span>${add}</div>${body}</section>`;
+}
+function lessonRow(l,first,k,total,opts){
   const imgs=lessonImages(l.id);
   const pages=str(l.pages),hw=str(l.homework),as=str(l.assess);
   let photo='';
@@ -1655,6 +1687,21 @@ function lessonRow(l,first,k,total){
   };
   const asTag=str(l.assessType)||(/إملاء|dictation/i.test(as)?'إملاء':/project|مشروع/i.test(as)?'مشروع':'تقييم');
   const tools=canEditData()?`<span class="rowtools"><button class="btn small quiet" data-act="ledit" data-id="${esc(l.id)}">${tx('تعديل','Edit')}</button><button class="btn small quiet" data-act="lmove" data-dir="up" data-id="${esc(l.id)}" ${k===0?'disabled':''} aria-label="${tx('نقل للأعلى','Move up')}">↑</button><button class="btn small quiet" data-act="lmove" data-dir="down" data-id="${esc(l.id)}" ${k===total-1?'disabled':''} aria-label="${tx('نقل للأسفل','Move down')}">↓</button><button class="btn small quiet danger" data-act="dellesson" data-id="${esc(l.id)}">${tx('حذف','Delete')}</button></span>`:'';
+  if(opts&&opts.older){
+    const dictBtn=dictOf(l)?`<button class="btn small color" data-act="dict" data-id="${esc(l.id)}">${tx('مدرّب الإملاء','Dictation trainer')}</button>`:'';
+    const toolsO=canEditData()?`<span class="rowtools"><button class="btn small quiet" data-act="ledit" data-id="${esc(l.id)}">${tx('تعديل','Edit')}</button><button class="btn small quiet danger" data-act="dellesson" data-id="${esc(l.id)}">${tx('حذف','Delete')}</button></span>`:'';
+    const own=canUpload()?`<div class="cellacts olderown">${photo}</div>`:'';
+    let ex='';
+    if(l.subject==='english'){const e=explainCell();ex=`<td class="st read" data-label="${tx('الشرح','Explanation')}"><div class="cellacts">${dictBtn&&/class="muted"/.test(e)?dictBtn:e+dictBtn}</div></td>`}
+    const dictIn=l.subject!=='english'&&dictBtn?`<div class="cellacts olderown">${dictBtn}</div>`:'';
+    return `<tr>
+    <td class="per" data-label="${tx('الأسبوع','Week')}"><span dir="auto">${esc(opts.when||'—')}</span></td>
+    <td class="lesson" data-label="${tx('الدرس','Lesson')}"><span class="lt" dir="auto">${esc(l.title)}</span>${pages?`<span class="pg">${tx('ص','p.')} ${esc(pages)}</span>`:''}${dictIn}${own}${toolsO}</td>
+    ${ex}
+    <td class="st" data-label="${mapHead(l.subject)}">${mapCell()}</td>
+    <td class="st" data-label="${tx('ورقة تدريب','Sheet')}">${cell('sheet',tx('افتح','Open'))}</td>
+    <td class="st" data-label="${tx('لعبة','Game')}">${cell('game',tx('العبي','Play'))}</td></tr>`;
+  }
   return `<tr>
     <td class="per" data-label="${first}"><span dir="auto">${esc(perLabel(l.period))||'—'}</span></td>
     <td class="lesson" data-label="${tx('الدرس','Lesson')}"><span class="lt" dir="auto">${esc(l.title)}</span>${pages?`<span class="pg">${tx('ص','p.')} ${esc(pages)}</span>`:''}${et?`<span class="etag">${esc(tx(ETYPE_AR[et],ETYPE_EN[et]))}</span>`:''}${tools}</td>

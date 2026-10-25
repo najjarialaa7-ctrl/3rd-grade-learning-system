@@ -2,6 +2,9 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 18 (2026-10-25)
+- **Older lessons in one table.** Past weeks and lessons added without a plan now sit in one table per subject, newest first, with the explanation, map, sheet and game, instead of a separate table plus a folding group per week. English is split into reading, grammar, and phonics with dictation.
+
 ## 17 (2026-10-25)
 - **PDF weekly plans are read automatically.** The pages are drawn to images in the browser (pdf.js, loaded only when needed) and read by Claude like photos. Before this, a PDF plan was stored but not read.
 - The cover's reading-voice button icon is sized correctly on phones.
