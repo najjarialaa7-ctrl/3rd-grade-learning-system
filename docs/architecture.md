@@ -49,6 +49,7 @@ The page starts the same way every time. `loadSnap()` renders the embedded snaps
 
   Anything malformed is dropped rather than shown.
 - `kindsFor(lesson)` decides which kinds a lesson gets (see [features.md](features.md)).
+- `extractWeek()` reads a weekly plan: photos are sent as they are, and each PDF page is first drawn to a JPEG with pdf.js (`planImages()`, `pdfToImages()`). pdf.js is loaded from cdnjs only when a PDF needs reading.
 
 ## Interface language
 - `UI` is `'ar'` or `'en'` and is saved in `localStorage["nay-ui"]`. Every interface string goes through `tx(ar, en)`.

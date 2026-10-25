@@ -42,14 +42,16 @@ $cases = @(
   @('profile.test.html', '#named', 8000),
   @('profile.test.html', '', 6000),
   @('student-copy.test.html', '', 8000),
-  @('student-copy-publish.test.html', '', 6000)
+  @('student-copy-publish.test.html', '', 6000),
+  @('weekly-plan-pdf.test.html', '', 250000)
 )
 $failed = 0
 foreach ($c in $cases) {
   $file, $hash, $budget = $c
   $test = [IO.File]::ReadAllText((Join-Path $root "tests/$file"), $enc)
   $run = Join-Path $tmp ("run-" + $file)
-  [IO.File]::WriteAllText($run, '<script src="_harness.js"></script><script src="sample.js"></script>' + "`n" + $test + $page, $enc)
+  # The charset comes first: a test that starts with a long ASCII block could otherwise be read in the wrong encoding.
+  [IO.File]::WriteAllText($run, '<meta charset="utf-8"><script src="_harness.js"></script><script src="sample.js"></script>' + "`n" + $test + $page, $enc)
   $url = 'file:///' + ($run -replace '\\', '/') + $hash
   # The browser logs harmless messages to stderr, so both streams go to files rather than the console.
   $outFile = Join-Path $tmp 'dom.txt'; $errFile = Join-Path $tmp 'log.txt'

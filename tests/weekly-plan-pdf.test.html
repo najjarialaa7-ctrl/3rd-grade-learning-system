@@ -1,0 +1,27 @@
+<!-- A weekly plan uploaded as a PDF: the pages are drawn to images (pdf.js from cdnjs, so this test needs the internet)
+     and sent to Claude; the notes and the lesson rows Claude returns are written to the database. -->
+<script>
+const PDFJS_PING='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const PDF_B64='JVBERi0xLjQKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFIgNiAwIFJdL0NvdW50IDI+PmVuZG9iagozIDAgb2JqPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9NZWRpYUJveFswIDAgMzAwIDIwMF0vQ29udGVudHMgNCAwIFIvUmVzb3VyY2VzPDwvRm9udDw8L0YxIDUgMCBSPj4+Pj4+ZW5kb2JqCjQgMCBvYmo8PC9MZW5ndGggNDA+PnN0cmVhbQpCVCAvRjEgMjQgVGYgNDAgMTAwIFRkIChXZWVrIHBsYW4pIFRqIEVUCmVuZHN0cmVhbSBlbmRvYmoKNSAwIG9iajw8L1R5cGUvRm9udC9TdWJ0eXBlL1R5cGUxL0Jhc2VGb250L0hlbHZldGljYT4+ZW5kb2JqCjYgMCBvYmo8PC9UeXBlL1BhZ2UvUGFyZW50IDIgMCBSL01lZGlhQm94WzAgMCAzMDAgMjAwXS9Db250ZW50cyA0IDAgUi9SZXNvdXJjZXM8PC9Gb250PDwvRjEgNSAwIFI+Pj4+Pj5lbmRvYmoKdHJhaWxlcjw8L1Jvb3QgMSAwIFI+PgolJUVPRgo=';
+const pdfBlob=new Blob([Uint8Array.from(atob(PDF_B64),c=>c.charCodeAt(0))],{type:'application/pdf'});
+fakeClaude({weeks:[{id:'w10',weekOf:'2026-10-25',files:[{id:'planpdf',type:'application/pdf',name:'week 10.pdf'}],notes:{},reminders:[],createdAt:'2026-10-25T08:00:00Z'}],lessons:[],items:[],tables:[2]},{
+  files:{planpdf:pdfBlob},
+  sample:{title:'Week 10',notes:{math:'3.3 Multiply by 6 (p.107)'},reminders:['Dictation on Thursday'],
+    lessons:{math:[{title:'3.3 Multiply by 6',period:'الحصة 1',pages:'107'},{title:'3.4 Multiply by 7',period:'الحصة 2',pages:'113'}]}}});
+runTest(async()=>{
+  const b=$q('#week [data-act=extract]');
+  T_.ok(b,'a PDF plan should offer the read-the-plan button');
+  if(!b)return;
+  b.click();
+  /* Drawing the PDF takes real time, and headless virtual time does not wait for it; a network round trip does. */
+  const realWait=()=>fetch(PDFJS_PING+'?t='+Math.random(),{method:'HEAD',cache:'no-store'}).catch(()=>{});
+  for(let i=0;i<300&&!window.__writes.some(w=>/^lessons\//.test(w[0]));i++)await realWait();
+  const imgs=window.__sampled||[];
+  T_.ok(imgs.length===2,'both PDF pages should be sent as images, got '+imgs.length);
+  T_.ok(imgs.every(x=>x&&x.type==='image/jpeg'),'the pages should be sent as JPEG images');
+  const wk=window.__writes.find(w=>w[0]==='weeks/w10');
+  T_.ok(wk&&wk[1].notes&&wk[1].notes.math.includes('Multiply by 6'),'the week notes should be saved');
+  const ls=window.__writes.filter(w=>/^lessons\//.test(w[0])).map(w=>w[1]);
+  T_.ok(ls.length===2&&ls[0].week==='w10'&&ls[0].subject==='math'&&ls[0].pages==='107','the lesson rows should be created for the week');
+});
+</script>

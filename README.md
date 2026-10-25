@@ -15,7 +15,7 @@ A bilingual (Arabic and English) study notebook for a Grade 3 child, organised b
 
 ## What it does
 
-- **Weekly plan → lesson tables.** A photo of the school's weekly plan becomes one table per subject: math, science, English, Arabic, Islamic studies and computer. Each table lists periods, lessons, pages, homework and assessments. Older lessons can be added without a plan.
+- **Weekly plan → lesson tables.** The school's weekly plan, as photos or a PDF, becomes one table per subject: math, science, English, Arabic, Islamic studies and computer. Each table lists periods, lessons, pages, homework and assessments. Older lessons can be added without a plan.
 - **Lesson photos → study kit.** For each lesson, Claude makes the parts that suit its subject:
   - **Math:** a picture guide, a practice sheet and a game.
   - **English reading:** read-aloud text with the yellow vocabulary, a lesson map, a sheet and a game.

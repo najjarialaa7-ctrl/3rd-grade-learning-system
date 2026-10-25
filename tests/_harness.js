@@ -19,11 +19,17 @@ window.fakeClaude=function(snap,opts){
   const settings=Object.assign({nexUrl:snap.nexUrl||'',tables:snap.tables,student:snap.student},opts.settings||{});
   const writes=window.__writes=[];
   const qs=arr=>({docs:arr.map(d=>({id:d.id,exists:true,data:()=>d})),size:arr.length,empty:!arr.length});
-  const db={collection:n=>({onSnapshot:cb=>{setTimeout(()=>cb(qs(data[n]||[])),10);return()=>{}}}),
+  let n=0;
+  const db={collection:c=>({onSnapshot:cb=>{setTimeout(()=>cb(qs(data[c]||[])),10);return()=>{}},
+      add:async v=>{const id='new'+(++n);writes.push([c+'/'+id,v]);return{id}}}),
     doc:p=>({onSnapshot:cb=>{setTimeout(()=>cb(p==='settings/main'?{exists:true,data:()=>settings}:{exists:false,data:()=>undefined}),10);return()=>{}},
       set:async v=>{writes.push([p,v])},update:async v=>{writes.push([p,v])}})};
   const caps={db,user:{can:async()=>true,canEdit:async()=>true}};
   if(opts.publish)caps.artifact={publish:async html=>{window.__published=html;return{version:'test'}}};
+  /* opts.sample: the JSON a fake Claude returns; the images it was sent are kept in window.__sampled */
+  if(opts.sample)caps.sample={json:async(prompt,o)=>{window.__sampled=(o&&o.images)||[];return opts.sample},limits:async()=>({images:{maxCount:5}})};
+  /* opts.files: { fileId: Blob } served at /_blob/<id>, like the artifact's file storage */
+  if(opts.files){const real=window.fetch.bind(window);window.fetch=(u,o)=>{const m=/^\/_blob\/(.+)$/.exec(String(u));if(m&&opts.files[m[1]])return Promise.resolve(new Response(opts.files[m[1]]));return real(u,o)}}
   window.claude={use:async n=>caps[n]||null};
 };
 

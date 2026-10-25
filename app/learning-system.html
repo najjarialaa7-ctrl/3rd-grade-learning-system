@@ -1457,7 +1457,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:16,date:'2026-10-23'};
+const APP_VERSION={n:17,date:'2026-10-25'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -1511,7 +1511,7 @@ function renderWeek(){
     <p class="empty">${tx('لم تُرفع خطة أسبوعية بعد. بعد رفعها (صورة أو PDF) يظهر هنا ما على كل مادة هذا الأسبوع، ويظهر أيضاً في صفحة كل مادة.','No weekly plan yet. Once it is uploaded (a photo or PDF), this shows what each subject has this week, and each subject page shows it too.')}</p>`;
     return;
   }
-  const hasImg=(w.files||[]).some(f=>String(f.type||'').startsWith('image/'));
+  const hasImg=(w.files||[]).some(f=>isImg(f)||isPdf(f));
   const anyNote=SUBJECTS.some(s=>str(w.notes&&w.notes[s.id]));
   let acts=fileButtons(w.files,tx('فتح الخطة','Open plan'));
   if(canMake()&&hasImg)acts+=`<button class="btn small" data-act="extract" data-id="${esc(w.id)}">${anyNote?tx('إعادة استخراج ما على كل مادة','Read each subject again'):tx('استخراج ما على كل مادة','Read each subject from the plan')}</button>`;
@@ -1901,7 +1901,7 @@ async function submitWeek(){
     const up=await uploadAll(files,say);
     const ref=await S.db.collection('weeks').add({weekOf:date,files:up,notes:{},reminders:[],createdAt:nowIso()});
     closeModal();toast(tx('رُفعت الخطة','Plan uploaded'));
-    if(auto&&up.some(f=>f.type.startsWith('image/')))extractWeek(ref.id,up);
+    if(auto&&up.some(f=>isImg(f)||isPdf(f)))extractWeek(ref.id,up);
   }catch(e){say(uploadMsg(e),true);btn.disabled=false}
 }
 
@@ -2189,6 +2189,7 @@ function sampleMsg(e){
   if(c==='session_expired')return tx('انتهت الجلسة. يلزم تسجيل الدخول من جديد.','The session ended. Sign in again.');
   if(c==='invalid_json'||c==='bad_shape'||c==='empty_completion')return tx('لم تكتمل النتيجة. يمكن المحاولة مرة أخرى.','The result was incomplete. Try again.');
   if(c==='fetch')return tx('تعذّر تحميل صور الدرس.','The lesson photos could not be loaded.');
+  if(c==='pdf')return tx('تعذّر فتح ملف PDF. ارفعي صورة للخطة، أو أرسليها إلى Claude في المحادثة.','The PDF could not be opened. Upload a photo of the plan, or send it to Claude in the chat.');
   if(c==='invalid_argument'||c==='quota_exceeded')return uploadMsg(e);
   return tx('انقطع الاتصال قبل أن تكتمل. يمكن المحاولة مرة أخرى.','The connection dropped before it finished. Try again.');
 }
@@ -2202,6 +2203,48 @@ function showBusy(msg){
 function hideBusy(){clearInterval(busyTimer);busyCtl=null;closeModal()}
 async function fetchImages(files){
   return Promise.all(files.map(f=>fetch(blobUrl(f.id)).then(r=>{if(!r.ok)throw{code:'fetch'};return r.blob()})));
+}
+/* Schools often send the weekly plan as a PDF. Its pages are drawn to images with pdf.js (loaded only when needed)
+   so Claude can read them like photos. */
+const isPdf=f=>String(f&&f.type||'')==='application/pdf'||/\.pdf$/i.test(String(f&&f.name||''));
+const isImg=f=>String(f&&f.type||'').startsWith('image/');
+const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+let pdfjsP=null;
+function loadPdfJs(){
+  if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
+  if(!pdfjsP)pdfjsP=new Promise((res,rej)=>{
+    const s=document.createElement('script');s.src=PDFJS+'pdf.min.js';
+    s.onload=()=>{const L=window.pdfjsLib;if(!L){pdfjsP=null;rej({code:'pdf'});return}L.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.js';res(L)};
+    s.onerror=()=>{pdfjsP=null;rej({code:'pdf'})};
+    document.head.appendChild(s);
+  });
+  return pdfjsP;
+}
+async function pdfToImages(blob,max){
+  try{
+    const L=await loadPdfJs();
+    const doc=await L.getDocument({data:new Uint8Array(await blob.arrayBuffer())}).promise;
+    const out=[];
+    for(let p=1;p<=Math.min(doc.numPages,max);p++){
+      const page=await doc.getPage(p),vp=page.getViewport({scale:1.6});
+      const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
+      const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);
+      await page.render({canvasContext:g,viewport:vp}).promise;
+      out.push(await new Promise(r=>c.toBlob(r,'image/jpeg',0.85)));
+    }
+    return out.filter(Boolean);
+  }catch(e){throw e&&e.code?e:{code:'pdf'}}
+}
+/* Photos as they are, and each PDF as page images, up to the image limit. */
+async function planImages(files){
+  const max=S.sampleMax||5;
+  let blobs=await fetchImages(files.filter(isImg).slice(0,max));
+  for(const f of files.filter(isPdf)){
+    if(blobs.length>=max)break;
+    const [pdf]=await fetchImages([f]);
+    blobs=blobs.concat(await pdfToImages(pdf,max-blobs.length));
+  }
+  return blobs;
 }
 function setBusy(m){const h=md.querySelector('.busy h2');if(h)h.textContent=m}
 const PROMPTS={outline:outlinePrompt,sheet:sheetPrompt,game:gamePrompt,grammar:grammarPrompt,phonics:phonicsPrompt,visual:visualPrompt};
@@ -2307,11 +2350,12 @@ function openItem(it){
 }
 async function extractWeek(id,files){
   const w=S.weeks.find(x=>x.id===id);
-  const list=(files||(w&&w.files)||[]).filter(f=>String(f.type||'').startsWith('image/')).slice(0,S.sampleMax);
+  const list=(files||(w&&w.files)||[]).filter(f=>isImg(f)||isPdf(f));
   if(!list.length||!S.sample)return;
   const ctl=showBusy(tx('قراءة الخطة الأسبوعية','Reading the weekly plan'));
   try{
-    const blobs=await fetchImages(list);
+    const blobs=await planImages(list);
+    if(!blobs.length)throw{code:'pdf'};
     const out=await S.sample.json(weekPrompt(blobs.length),{images:blobs,signal:ctl.signal,cache:false});
     if(!out||typeof out!=='object'||!out.notes)throw{code:'bad_shape'};
     const notes={};SUBJECTS.forEach(s=>{notes[s.id]=str(out.notes[s.id]).slice(0,500)});

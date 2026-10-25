@@ -2,6 +2,10 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 17 (2026-10-25)
+- **PDF weekly plans are read automatically.** The pages are drawn to images in the browser (pdf.js, loaded only when needed) and read by Claude like photos. Before this, a PDF plan was stored but not read.
+- The cover's reading-voice button icon is sized correctly on phones.
+
 ## 16 (2026-10-23)
 - **Student profile.** The child's name, the address form (girl or boy) and the school year are now a setting (`settings.student`), edited from the cover label. They used to be written into the code. The page title, the cover, the praise and Claude's prompts all use the profile.
 - The project is packaged as **3rd Grade Learning System**, with sample data, documentation and browser tests.
