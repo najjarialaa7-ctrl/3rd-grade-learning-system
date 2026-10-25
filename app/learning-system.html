@@ -103,7 +103,7 @@ details.old li{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .subjects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 @media (max-width:820px){.subjects{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:370px){.subjects{grid-template-columns:1fr}}
-.tile{all:unset;box-sizing:border-box;cursor:pointer;position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px 16px;display:flex;flex-direction:column;gap:4px;min-height:190px;transition:transform .15s ease,box-shadow .15s ease}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px 16px;display:flex;flex-direction:column;gap:4px;min-height:140px;transition:transform .15s ease,box-shadow .15s ease}
 .tile::before{content:"";position:absolute;top:-1px;inset-inline-start:22px;width:70px;height:9px;background:var(--c);border-radius:0 0 7px 7px}
 .tile:hover{transform:translateY(-2px);box-shadow:0 10px 24px -14px var(--c)}
 .motif{font-family:var(--display);font-weight:800;font-size:2.1rem;line-height:1.25;color:var(--c);unicode-bidi:isolate}
@@ -1462,7 +1462,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:19,date:'2026-10-25'};
+const APP_VERSION={n:20,date:'2026-10-25'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -1513,7 +1513,7 @@ function renderWeek(){
   const up=canUpload()?`<button class="btn primary" data-act="weekform">${w?tx('رفع خطة جديدة','Upload a new plan'):tx('رفع الخطة الأسبوعية','Upload the weekly plan')}</button>`:'';
   if(!w){
     el.innerHTML=`<div class="week-head"><div><span class="eyebrow">${eyebrow}</span><h2>${thisWeek}</h2></div><div class="week-actions">${up}</div></div>
-    <p class="empty">${tx('لم تُرفع خطة أسبوعية بعد. بعد رفعها (صورة أو PDF) يظهر هنا ما على كل مادة هذا الأسبوع، ويظهر أيضاً في صفحة كل مادة.','No weekly plan yet. Once it is uploaded (a photo or PDF), this shows what each subject has this week, and each subject page shows it too.')}</p>`;
+    <p class="empty">${tx('لم تُرفع خطة أسبوعية بعد. بعد رفعها (صورة أو PDF) يظهر ما على كل مادة هذا الأسبوع في صفحة المادة.','No weekly plan yet. Once it is uploaded (a photo or PDF), each subject page shows what it covers this week.')}</p>`;
     return;
   }
   const hasImg=(w.files||[]).some(f=>isImg(f)||isPdf(f));
@@ -1522,27 +1522,16 @@ function renderWeek(){
   if(canMake()&&hasImg)acts+=`<button class="btn small" data-act="extract" data-id="${esc(w.id)}">${anyNote?tx('إعادة استخراج ما على كل مادة','Read each subject again'):tx('استخراج ما على كل مادة','Read each subject from the plan')}</button>`;
   if(canEditData())acts+=`<button class="btn small quiet danger" data-act="delweek" data-id="${esc(w.id)}">${tx('حذف','Delete')}</button>`;
   const rem=(Array.isArray(w.reminders)?w.reminders:[]).filter(Boolean);
-  const notes=SUBJECTS.map(s=>{
-    const n=str(w.notes&&w.notes[s.id]);
-    return `<button class="note s-${s.id}" data-act="go" data-id="${s.id}"><span class="dot"></span><b>${esc(sName(s))}</b><p class="${n?'':'none'}" dir="auto">${n?esc(n):tx('لا توجد ملاحظة','No note')}</p></button>`;
-  }).join('');
+  /* What each subject covers this week shows inside the subject's page, not here, to keep the first page calm. */
   let hint='';
-  if(!anyNote){
-    hint=hasImg&&canMake()?`<p class="hint" style="margin:0">${tx('زر «استخراج ما على كل مادة» يقرأ صورة الخطة ويكتب ملخص كل مادة هنا.','The “Read each subject” button reads the plan photo and writes a summary for each subject here.')}</p>`
-      :`<p class="hint" style="margin:0">${tx('ملخص كل مادة يُكتب هنا بعد قراءة الخطة. ملفات PDF تُقرأ من محادثة Claude.','A summary for each subject appears here once the plan is read. Claude reads PDF plans in the chat.')}</p>`;
-  }
+  if(!anyNote&&canMake())hint=`<p class="hint" style="margin:0">${hasImg?tx('زر «استخراج ما على كل مادة» يقرأ الخطة ويكتب ما على كل مادة في صفحتها.','The “Read each subject” button reads the plan and writes what each subject covers on its page.'):tx('ما على كل مادة يُكتب في صفحتها بعد قراءة الخطة.','What each subject covers appears on its page once the plan is read.')}</p>`;
   const old=S.weeks.slice(1,13);
   const oldHtml=old.length?`<details class="old"><summary>${tx('الخطط السابقة','Earlier plans')} (${old.length})</summary><ul>${old.map(o=>`<li><span dir="auto">${esc(weekTitle(o))}</span>${fileButtons(o.files,tx('فتح','Open'))}${canEditData()?`<button class="btn small quiet danger" data-act="delweek" data-id="${esc(o.id)}">${tx('حذف','Delete')}</button>`:''}</li>`).join('')}</ul></details>`:'';
   el.innerHTML=`<div class="week-head"><div><span class="eyebrow">${eyebrow} · ${tx('تبدأ','starts')} ${esc(fmtDay(w.weekOf,{weekday:'long',day:'numeric',month:'long'}))}</span><h2 dir="auto">${esc(weekTitle(w))}</h2></div><div class="week-actions">${acts}${up}</div></div>
   ${rem.length?`<ul class="reminders" dir="auto">${rem.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`:''}
-  <div class="notes">${notes}</div>${hint}${oldHtml}`;
+  ${hint}${oldHtml}`;
 }
 
-function counts(sid){
-  const c={game:0,sheet:0,outline:0,file:0,photo:0,lessons:lessonsFor(sid).length,older:olderCount(sid)};
-  S.items.forEach(i=>{if(i.subject!==sid)return;if(i.kind==='link')c.file++;else if(i.kind==='visual')c.outline++;else if(c[i.kind]!=null)c[i.kind]++});
-  return c;
-}
 const curWeek=()=>S.weeks[0]||null;
 const byOrder=(a,b)=>(a.order||0)-(b.order||0)||String(a.title||'').localeCompare(String(b.title||''));
 function lessonsFor(sid){
@@ -1556,7 +1545,6 @@ function pastGroups(sid){
   S.weeks.forEach(wk=>{if(w&&wk.id===w.id)return;const ls=S.lessons.filter(l=>l.subject===sid&&l.week===wk.id).sort(byOrder);if(ls.length)out.push({w:wk,ls})});
   return out;
 }
-function olderCount(sid){return olderLessons(sid).length}
 function lessonItems(lid,kind){return S.items.filter(i=>i.lesson===lid&&i.kind===kind)}
 function lessonImages(lid){
   const out=[];
@@ -1569,18 +1557,14 @@ function renderView(){
   const s=SUBJ[S.route];
   v.innerHTML=s?renderSubject(s):renderHome();
 }
+/* The first page shows each subject by its icon and name only; what the week holds is inside the subject. */
 function renderHome(){
-  const w=S.weeks[0];
   const add=canEditData()?`<button class="btn" data-act="oldform">${ICON.plus} ${tx('إضافة درس سابق','Add an older lesson')}</button>`:'';
   return `<div class="homebar"><h2>${tx('المواد','Subjects')}</h2>${add}</div>
-    <section class="subjects" aria-label="${tx('المواد','Subjects')}">${SUBJECTS.map(s=>{
-    const c=counts(s.id);const n=w?str(w.notes&&w.notes[s.id]):'';
-    return `<button class="tile s-${s.id}" data-act="go" data-id="${s.id}">
+    <section class="subjects" aria-label="${tx('المواد','Subjects')}">${SUBJECTS.map(s=>`<button class="tile s-${s.id}" data-act="go" data-id="${s.id}">
       <span class="motif" dir="${s.md}">${esc(s.motif)}</span>
       <span class="tname">${esc(sName(s))}</span><span class="tsub">${esc(s.ar)}</span>
-      ${n?`<span class="tnote" dir="auto">${esc(n)}</span>`:''}
-      <span class="tcounts"><span>${tx('دروس الأسبوع','This week')}: <b>${c.lessons}</b></span>${c.older?`<span>${tx('دروس سابقة','Older')}: <b>${c.older}</b></span>`:''}<span>${tx('مخططات','Maps')}: <b>${c.outline}</b></span><span>${tx('أوراق','Sheets')}: <b>${c.sheet}</b></span><span>${tx('ألعاب','Games')}: <b>${c.game}</b></span></span>
-    </button>`;}).join('')}</section>`;
+    </button>`).join('')}</section>`;
 }
 
 function shelf(title,count,body,empty){

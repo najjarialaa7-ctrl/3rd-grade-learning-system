@@ -1,7 +1,7 @@
 # Features
 
 ## Cover and student profile
-- The cover shows the notebook's title, the name label (name, grade, school year) and the school platform link. It also has the language switch and the **reading voice** button.
+- The cover shows the notebook's title, the name label (name, grade, school year) and the school platform link. Below it, the week box shows the week's title, reminders and earlier plan files, and each subject appears as a tile with only its icon and name; what the subject covers this week is inside its page. It also has the language switch and the **reading voice** button.
 - The parent presses **Edit** on the label to set the child's name in Arabic and English, whether Claude should address a girl or a boy, and the school year. Without a name, the title reads «نظام التعلّم للصف الثالث» / *3rd Grade Learning System*.
 
 ## Weekly plan and lesson tables

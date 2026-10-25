@@ -2,6 +2,9 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 20 (2026-10-25)
+- **A calmer first page.** The week box no longer lists what every subject covers, and the subject tiles show only the icon and the name. Each subject's week note shows inside its page. The week's reminders stay on the first page.
+
 ## 19 (2026-10-25)
 - **No card shelves on subject pages.** Maps, games, practice sheets and readings now open only from the lesson tables (this week and older lessons), which keeps the page calm for the student. A shelf appears only for something not linked to any lesson, so nothing becomes unreachable; school files show only when there are some.
 
