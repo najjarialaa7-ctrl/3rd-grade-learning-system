@@ -34,7 +34,7 @@ Common fields: `kind`, `subject`, `lesson` (the lessons id), `title`, `lang` (`a
 |---|---|
 | `photo` | `files: [{id, type, name}]`: lesson photos in the artifact's file storage (never in the snapshot) |
 | `file`, `link` | School files (`files`) or a link (`url`) |
-| `reading` | `paragraphs[]` (a simple retelling, not the book's text), `highlighted`, `vocab[{w, base, pos, meaning, ar, from, examples[2]}]` |
+| `reading` | `paragraphs[]` (a simple retelling, not the book's text), `highlighted`, `vocab[{w, base, pos, meaning, ar, from, examples[2], hl?, forms?, cues?}]`. `hl: "orange"` shows the word in orange (default yellow); `forms` are extra accepted forms (irregular or related words); `cues` are everyday words that show the meaning in her own sentence |
 | `outline` | Lesson map: `summary`, `branches[{title, points[]}]`, `words[{w,m}]`, `remember[]` |
 | `grammar` | Rule card: `rule`, `points[]`, `examples[{s, ok, note}]`, `tips[]`, `words[{w,m}]` |
 | `phonics` | `rules[{pattern, rule, words[]}]`, `words[{w, m, ar}]`, `tips[]` |

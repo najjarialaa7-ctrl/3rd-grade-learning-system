@@ -1,0 +1,73 @@
+<!-- Her own sentence with a vocabulary word: checked on the device with no Claude (the student's copy is signed out).
+     Any tense or form of the word counts. Orange words are highlighted in orange, yellow words in yellow. -->
+<script>
+const V=[
+ {w:'opportunity',pos:'noun',meaning:'a chance to do something good',ar:'فرصة',examples:['The trip is a great opportunity to learn.'],cues:['chance','learn','new']},
+ {w:'voyage',base:'voyage',pos:'noun',meaning:'a long trip by ship',ar:'رحلة بحرية',hl:'orange',examples:['Our voyage took three days.'],cues:['ship','sea','trip','long']},
+ {w:'tossed',base:'toss',pos:'verb',meaning:'threw or moved up and down',ar:'قذف',hl:'orange',examples:['I tossed the ball.']},
+ {w:'lit a lamp',base:'light a lamp',pos:'verb phrase',meaning:'turned on a lamp',ar:'أشعل مصباحاً',hl:'orange',examples:['Mom lit a lamp.']},
+ {w:'cheer up',base:'cheer up',pos:'verb phrase',meaning:'make someone happier',ar:'يُفرِح',hl:'orange',examples:['Cheer up, we can play tomorrow.']},
+ {w:'suddenly',pos:'adverb',meaning:'very quickly',ar:'فجأة',hl:'orange',forms:['sudden'],examples:['Suddenly the lights went out.']},
+ {w:'passenger',pos:'noun',meaning:'a person who travels',ar:'راكب',hl:'orange',examples:['The bus had ten passengers.']}];
+const RDG={id:'rd',kind:'reading',subject:'english',lesson:'e1',title:'Sailing',lang:'en',highlighted:true,createdAt:'2026-10-26T08:00:00Z',
+  paragraphs:['Nora lit the old lamp. The voyage was long and big waves tossed the ship. Every passenger hoped for an opportunity. Mama tried to cheer them up.'],vocab:V};
+fakeClaude({weeks:[{id:'w1',weekOf:'2026-10-25',title:'Week',notes:{},reminders:[]}],
+  lessons:[{id:'e1',week:'w1',subject:'english',order:1,period:'1',title:'Reading: Sailing',etype:'reading'}],items:[RDG]});
+/* Type a sentence into word card k, press its check button, and read the feedback. */
+function chk(k,s){
+  $q('#lys'+k).value=s;$q(`#overlay [data-act=vcheck][data-k="${k}"]`).click();
+  const f=$q('#lyf'+k);return{ok:f.classList.contains('ok'),bad:f.classList.contains('bad'),t:$txt('#lyf'+k),better:$txt('#lyf'+k+' .better')};
+}
+runTest(async()=>{
+  /* the reading: yellow and orange words */
+  $q('[data-act=go][data-id=english]').click();
+  $q('table.lessons [data-act=open][data-id=rd]').click();
+  const marks=$qa('#overlay mark.vw');
+  T_.ok(marks.length===6,'six words are highlighted in the reading: '+marks.map(m=>m.textContent).join('|'));
+  T_.ok(marks.find(m=>m.textContent==='lit the old lamp')&&marks.find(m=>m.textContent==='cheer them up'),'phrases are highlighted in any form');
+  T_.ok(marks.filter(m=>m.classList.contains('vo')).length===5&&!marks.find(m=>m.textContent==='opportunity').classList.contains('vo'),'orange words are orange, the yellow word stays yellow');
+  T_.ok(/yellow or orange|الصفراء أو البرتقالية/.test($txt('#overlay .rhint')),'the hint names both colours');
+  $q('#overlay [data-act=close]').click();
+
+  /* the word cards, grouped by colour */
+  $q('table.lessons [data-act=vocab][data-id=rd]').click();
+  T_.ok($qa('#overlay .vgroup').length===2,'yellow and orange words are in two groups');
+  T_.ok($qa('#overlay .vcard.vo').length===6,'six orange cards');
+  T_.ok($q('#overlay [data-act=vcheck][data-k="1"]'),'the check button shows even without Claude');
+  const forms=k=>$txt(`#lys${k}`)||$q('#lys'+k).closest('.vcard').querySelector('.vany').textContent;
+  T_.ok(/tossed, toss, tosses, tossing/.test(forms(2)),'forms shown for a verb: '+forms(2));
+  T_.ok(/lights a lamp/.test(forms(3))&&/lighting a lamp/.test(forms(3)),'forms shown for a phrase: '+forms(3));
+
+  /* any form of the word counts */
+  T_.ok(chk(1,'The voyages were long and the ship rocked.').ok,'a plural form counts: voyages');
+  T_.ok(chk(2,'The waves toss the boat every day.').ok,'the present tense counts: toss (the word is tossed)');
+  T_.ok(chk(2,'The wind was tossing the leaves.').ok,'the -ing form counts: tossing');
+  T_.ok(chk(3,'Dad lights the lamp at night.').ok,'a phrase in another tense and with "the" counts: lights the lamp');
+  T_.ok(chk(4,'I made a card to cheer my sister up.').ok,'a phrase with words in between counts: cheer my sister up');
+  T_.ok(chk(5,'All of a sudden it started to rain.').ok,'an extra form listed by the lesson counts: sudden');
+  T_.ok(chk(6,'Ten passengers were on the bus.').ok,'a plural noun counts: passengers');
+
+  /* each kind of slip gets its own nudge */
+  let r=chk(1,'The ship was very big');
+  T_.ok(r.bad&&/can’t find “voyage”/.test(r.t),'a sentence without the word is caught: '+r.t);
+  r=chk(1,'We went on a long voyge by ship.');
+  T_.ok(r.bad&&/spelling/.test(r.t)&&/voyge/.test(r.t),'a misspelled word gets a spelling hint: '+r.t);
+  r=chk(1,'voyage');T_.ok(r.bad&&/Good start/.test(r.t),'one word alone is not a sentence: '+r.t);
+  r=chk(1,'Our voyage took three days.');T_.ok(r.bad&&/example sentence/.test(r.t),'copying the example is caught: '+r.t);
+  r=chk(1,'A long sunny voyage.');T_.ok(r.bad&&/action word/.test(r.t),'a sentence with no verb gets a verb hint: '+r.t);
+  r=chk(1,'');T_.ok(r.bad&&/Write a sentence first/.test(r.t),'an empty box asks for a sentence');
+
+  /* small fixes, and the meaning */
+  r=chk(1,'i want an voyage on a ship');
+  T_.ok(r.ok&&r.better==='I want a voyage on a ship.','small fixes: capital I, a/an and the full stop ('+r.better+')');
+  T_.ok(/You showed what it means/.test(r.t),'a cue word (ship) shows she knows the meaning');
+  r=chk(1,'I like the voyage very much.');
+  T_.ok(r.ok&&/Tip:/.test(r.t)&&!r.better,'no cue word: still right, with a tip and nothing to fix');
+  T_.ok(/a long trip by ship/.test(r.t),'the meaning is repeated under a right sentence');
+
+  /* Enter checks too */
+  $q('#lys2').value='The kids tossing the ball';
+  $q('#lys2').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+  T_.ok($q('#lyf2').classList.contains('ok'),'Enter checks the sentence too');
+});
+</script>

@@ -2,6 +2,13 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 21 (2026-10-26)
+- **The student's own sentence is checked on the device.** Before, the «Check my sentence» button needed Claude, so the student's copy (signed out) never checked anything. Now the page checks it by itself, in any tense or form of the word ("voyages", "tossed", "lit the lamp", "cheered her up"). It points out a missing word, a misspelling, a sentence that is too short, a copied example or a missing verb. It also fixes small things (capital letter, "I", a/an, the full stop), says whether the sentence shows the meaning, and repeats the meaning in English and Arabic. When Claude is in the page, Claude also checks the meaning and is told that any form of the word is fine. Enter checks the sentence too.
+- **Orange words.** A vocabulary word can be marked orange (`hl: "orange"`). It is highlighted in orange in the reading and the examples, and the word list shows yellow words and orange words in two groups. Readings made from photos also list words highlighted in orange in the book.
+- Vocabulary words can carry extra `forms` (irregular or related forms) and `cues` (everyday words that show the meaning). Reading prompts ask Claude for both.
+- The word game takes a fresh set of 8 words each time, so long word lists still get every kind of round.
+- `run-tests.ps1 -Only <name>` runs one test.
+
 ## 20 (2026-10-25)
 - **A calmer first page.** The week box no longer lists what every subject covers, and the subject tiles show only the icon and the name. Each subject's week note shows inside its page. The week's reminders stay on the first page.
 

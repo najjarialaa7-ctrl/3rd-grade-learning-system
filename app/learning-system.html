@@ -11,7 +11,7 @@
   --label:#FFFFFF; --label-ink:#1A2340; --label-line:#D7DDEA; --label-muted:#6A7490;
   --math:#2F6FEB; --science:#0E9A66; --english:#D93C48; --arabic:#C27005; --islamic:#0A827F; --computer:#7150E6;
   --on-c:#FFFFFF; --ok:#0E9A66; --bad:#D93C48; --star:#F0A500; --focus:#2F6FEB; --scrim:rgba(18,26,48,.5);
-  --hl:#FFE14D; --hl-ink:#1A2340;
+  --hl:#FFE14D; --hl-ink:#1A2340; --hl2:#FFB55E;
   --read:"Andika","Segoe UI",system-ui,sans-serif;
   --display:"Baloo Bhaijaan 2","IBM Plex Sans Arabic",system-ui,sans-serif;
   --body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;
@@ -22,7 +22,7 @@
   --label:#EEF2F9; --label-ink:#1A2340; --label-line:#CBD3E3; --label-muted:#5E6886;
   --math:#7FA5FF; --science:#43CA95; --english:#FF8088; --arabic:#F2A642; --islamic:#3DC5C0; --computer:#A98FFF;
   --on-c:#0E1426; --ok:#43CA95; --bad:#FF8088; --star:#FFC640; --focus:#7FA5FF; --scrim:rgba(0,0,0,.62);
-  --hl:#EBCB2E; --hl-ink:#14182A;
+  --hl:#EBCB2E; --hl-ink:#14182A; --hl2:#F2A04E;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#0E1426; --grid:#161E36; --card:#161F37; --ink:#E7ECF8; --muted:#9AA6C3; --line:#28334E;
@@ -30,7 +30,7 @@
   --label:#EEF2F9; --label-ink:#1A2340; --label-line:#CBD3E3; --label-muted:#5E6886;
   --math:#7FA5FF; --science:#43CA95; --english:#FF8088; --arabic:#F2A642; --islamic:#3DC5C0; --computer:#A98FFF;
   --on-c:#0E1426; --ok:#43CA95; --bad:#FF8088; --star:#FFC640; --focus:#7FA5FF; --scrim:rgba(0,0,0,.62);
-  --hl:#EBCB2E; --hl-ink:#14182A;
+  --hl:#EBCB2E; --hl-ink:#14182A; --hl2:#F2A04E;
   color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -410,7 +410,7 @@ mark.vw{background:var(--hl);color:var(--hl-ink);border-radius:4px;padding:0 3px
 .mbox .vcard{border:0;padding:0}
 .vhead{display:flex;gap:12px;align-items:center}
 .vword{font-family:var(--read);font-size:2rem;font-weight:700;line-height:1.1;overflow-wrap:anywhere}
-.vpos{font-size:.8rem;color:var(--muted);font-weight:600}
+.vpos{font-size:.8rem;color:var(--muted);font-weight:600;margin-top:4px}
 .vmean{font-size:1.12rem;margin:0}
 .var{color:var(--muted);margin:0}
 .vsec{font-size:.76rem;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:6px 0 0}
@@ -427,6 +427,16 @@ mark.vw{background:var(--hl);color:var(--hl-ink);border-radius:4px;padding:0 3px
 .vfeed{margin:0;font-size:.98rem;overflow-wrap:anywhere}
 .vfeed.ok{color:var(--ok)}.vfeed.bad{color:var(--bad)}
 .vfeed .better{display:block;color:var(--ink);font-family:var(--read)}
+.vfeed>span{display:block}
+.vfeed .vfar{font-family:var(--body);font-size:.92rem;color:var(--muted);margin-top:2px}
+.vfeed .vsmall{font-size:.9rem;color:var(--ink);margin-top:6px}
+.vfeed .vmeanr{display:table;margin-top:6px;color:var(--ink);font-size:.92rem;background:var(--tint);border-radius:8px;padding:4px 8px}
+.vany{margin:0;font-size:.88rem;color:var(--muted)}
+.vmeanr [lang=ar]{white-space:nowrap}
+.vhl{background:var(--hl);color:var(--hl-ink);border-radius:6px;padding:1px 8px;display:inline-block;line-height:1.2;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+mark.vw.vo,.vb.vo,.vhl.vo{background:var(--hl2)}
+.vgroup{display:flex;align-items:center;gap:8px;margin:22px 0 0;font-size:1.05rem}
+.vgroup small{color:var(--muted);font-weight:600}
 .listen-wrap{display:grid;justify-items:center;margin-bottom:16px}
 
 /* dictation trainer */
@@ -1462,7 +1472,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:20,date:'2026-10-25'};
+const APP_VERSION={n:21,date:'2026-10-26'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -2055,7 +2065,10 @@ function normalizeReading(out){
   if(!paragraphs.length)return null;
   const vocab=(Array.isArray(out.vocab)?out.vocab:[]).map(x=>({w:str(x&&x.w).slice(0,60),base:str(x&&x.base).slice(0,60),pos:str(x&&x.pos).slice(0,30),
     meaning:str(x&&x.meaning).slice(0,200),ar:str(x&&x.ar).slice(0,80),from:str(x&&x.from).slice(0,400),
-    examples:((x&&Array.isArray(x.examples))?x.examples:[]).map(str).filter(Boolean).slice(0,3).map(e=>e.slice(0,300))})).filter(x=>x.w).slice(0,20);
+    examples:((x&&Array.isArray(x.examples))?x.examples:[]).map(str).filter(Boolean).slice(0,3).map(e=>e.slice(0,300)),
+    ...(str(x&&x.hl).toLowerCase()==='orange'?{hl:'orange'}:{}),
+    ...((x&&Array.isArray(x.forms))?{forms:x.forms.map(str).filter(Boolean).slice(0,6).map(f=>f.slice(0,60))}:{}),
+    ...((x&&Array.isArray(x.cues))?{cues:x.cues.map(str).filter(Boolean).slice(0,10).map(f=>f.slice(0,30))}:{})})).filter(x=>x.w).slice(0,40);
   return{title:str(out.title).slice(0,120)||'Reading',lang:'en',highlighted:out.highlighted!==false,paragraphs,vocab};
 }
 function grammarPrompt(s,it,n){
@@ -2318,10 +2331,10 @@ function parseReadingText(t){
 function vocabPrompt(ctx,n,text){
   return `The ${n} attached image(s) are photos of pages from an English lesson for ${kidEn()}`+(ctx.title?` ("${ctx.title}")`:'')+`. The student is 8, in Grade 3, and their first language is Arabic. This is a simple retelling of the pages:
 """${text.slice(0,12000)}"""
-Some words in the photos are highlighted in yellow. These are her vocabulary words. List every yellow-highlighted word, in the order they appear.
-For each word give: "w" (the word as highlighted), "base" (its dictionary form), "pos" (noun, verb, adjective, adverb...), "meaning" (a very simple English meaning for an 8-year-old, at most 12 words), "ar" (its Arabic meaning in 1 to 3 words), "from" (one short sentence in your own words saying how the word is used in the lesson), and "examples" (2 new short sentences about a child's everyday life that show the meaning clearly).
+Some words in the photos are highlighted in yellow. These are her vocabulary words. List every yellow-highlighted word, in the order they appear. If some words are highlighted in orange instead, list them too, after the yellow ones, with "hl":"orange".
+For each word give: "w" (the word as highlighted), "base" (its dictionary form), "pos" (noun, verb, adjective, adverb...), "meaning" (a very simple English meaning for an 8-year-old, at most 12 words), "ar" (its Arabic meaning in 1 to 3 words), "from" (one short sentence in your own words saying how the word is used in the lesson), "examples" (2 new short sentences about a child's everyday life that show the meaning clearly), "forms" (other forms of the word she might write that are not just -s, -ed or -ing added, such as irregular past forms or related words; [] if none) and "cues" (4 to 8 everyday words that often appear in a sentence that shows the meaning, for example for "voyage": ship, sea, trip, long, ocean).
 If no words are highlighted in yellow, choose up to 6 words from the pages that a Grade 3 learner may not know, and set "highlighted" to false.
-Reply with only JSON: {"highlighted":true,"vocab":[{"w":"...","base":"...","pos":"...","meaning":"...","ar":"...","from":"...","examples":["...","..."]}]}`;
+Reply with only JSON: {"highlighted":true,"vocab":[{"w":"...","base":"...","pos":"...","meaning":"...","ar":"...","from":"...","examples":["...","..."],"forms":[],"cues":["...","..."]}]}`;
 }
 async function makeReadingData(ctx,blobs,signal){
   const r=await S.sample(readingTextPrompt(ctx,blobs.length),{images:blobs,signal,cache:false});
@@ -2719,19 +2732,77 @@ function speak(list,opt){
   return true;
 }
 function splitSents(p){return (String(p).match(/[^.!?]+[.!?]+["'\u201D\u2019)\]]*\s*|[^.!?]+$/g)||[String(p)]).map(s=>s.trim()).filter(Boolean)}
+/* ---------- word forms ----------
+   A vocabulary word counts in any tense or number: "voyage", "voyages", "tossed", "lit the lamp" all show the word.
+   Each family below lists the irregular forms of a common word; any member stands for the whole family. */
+const IRREG=(()=>{const m={};('be am is are was were been being|begin began begun|blow blew blown|break broke broken|bring brought|build built|buy bought|catch caught|choose chose chosen|come came|do does did done|draw drew drawn|drink drank drunk|drive drove driven|eat ate eaten|fall fell fallen|feel felt|fight fought|find found|fly flew flown flies|forget forgot forgotten|freeze froze frozen|get got gotten|give gave given|go goes went gone|grow grew grown|hang hung|have has had|hear heard|hide hid hidden|hold held|keep kept|know knew known|lay laid|lead led|leave left|lend lent|lie lay lain|light lit lighted|lose lost|make made|mean meant|meet met|pay paid|ride rode ridden|ring rang rung|rise rose risen|run ran|say said|see saw seen|sell sold|send sent|shake shook shaken|shine shone|shoot shot|sing sang sung|sink sank sunk|sit sat|sleep slept|slide slid|speak spoke spoken|spend spent|stand stood|steal stole stolen|stick stuck|sting stung|swim swam swum|swing swung|take took taken|teach taught|tear tore torn|tell told|think thought|throw threw thrown|understand understood|wake woke woken|wear wore worn|weep wept|win won|write wrote written|child children|man men|woman women|foot feet|tooth teeth|mouse mice|person people|leaf leaves|knife knives|life lives|wife wives|wolf wolves|half halves|shelf shelves|good better best|bad worse worst')
+  .split('|').forEach(g=>{const f=g.split(' ');f.forEach(w=>{m[w]=(m[w]||[]).concat(f)})});return m})();
+const reEsc=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const ARTICLES=['a','an','the'];
+/* Every spelling a word can take. Some are not real words ("voyageed"); they do no harm, since nobody writes them. */
+function inflect(t){
+  t=str(t).toLowerCase();const out=new Set();if(!t)return out;
+  (IRREG[t]||[]).concat([t]).forEach(b=>{
+    out.add(b);['s','es','ed','d','ing','er','est','ly',"'s"].forEach(s=>out.add(b+s));
+    if(/[^e]e$/.test(b))out.add(b.slice(0,-1)+'ing');
+    if(/[^aeiou]y$/.test(b)){const r=b.slice(0,-1);['ies','ied','ier','iest','ily'].forEach(s=>out.add(r+s))}
+    if(/ie$/.test(b))out.add(b.slice(0,-2)+'ying');
+    if(/(?:^|[^aeiou])[aeiou][bdgklmnprt]$/.test(b)){const c=b.slice(-1);['ed','ing','er','est','y'].forEach(s=>out.add(b+c+s))}
+  });
+  return out;
+}
+/* Regex sources for a vocabulary entry (its word, dictionary form and any extra forms). In a phrase, each word
+   takes its own forms, articles are optional, and up to two words may sit between ("cheered them up", "lit the old lamp"). */
+const GAP="(?:\\s+[a-z'’-]+){0,2}?\\s+";
+function formSources(x){
+  const raw=[x&&x.w,x&&x.base].concat(x&&Array.isArray(x.forms)?x.forms:[]).map(f=>str(f).toLowerCase().replace(/[‘’]/g,"'").trim()).filter(f=>f.length>1);
+  const out=new Map();
+  raw.forEach(f=>{
+    const toks=f.split(/\s+/).filter(t=>t&&!ARTICLES.includes(t));if(!toks.length)return;
+    const src=toks.map(t=>'(?:'+[...inflect(t)].sort((a,b)=>b.length-a.length).map(reEsc).join('|')+')').join(GAP);
+    if(!out.has(src))out.set(src,toks.length);
+  });
+  return [...out].map(([src,n])=>({src,n}));
+}
+function wordRegex(x){const s=formSources(x);return s.length?new RegExp('\\b(?:'+s.map(o=>o.src).join('|')+')\\b','gi'):null}
+/* The forms a child would write, for the hint under the sentence box: "voyage, voyages, voyaged". */
+function niceForms(x){
+  const pos=str(x&&x.pos).toLowerCase(),out=[];
+  const add=f=>{f=str(f).trim();if(f&&!out.some(o=>o.toLowerCase()===f.toLowerCase()))out.push(f)};
+  const verb=b=>{
+    const ir=IRREG[b];
+    const s=/(s|x|z|ch|sh)$/.test(b)?b+'es':/[^aeiou]y$/.test(b)?b.slice(0,-1)+'ies':b+'s';
+    const dbl=b.length<=4&&/(?:^|[^aeiou])[aeiou][bdgklmnprt]$/.test(b);
+    const ed=ir?ir.filter(w=>w!==b)[0]:/e$/.test(b)?b+'d':/[^aeiou]y$/.test(b)?b.slice(0,-1)+'ied':dbl?b+b.slice(-1)+'ed':b+'ed';
+    const ing=/ie$/.test(b)?b.slice(0,-2)+'ying':/[^e]e$/.test(b)?b.slice(0,-1)+'ing':dbl?b+b.slice(-1)+'ing':b+'ing';
+    return [b,s,ed,ing];
+  };
+  const base=str(x&&(x.base||x.w)).toLowerCase().trim();
+  add(x&&x.w);
+  if(base){
+    const toks=base.split(/\s+/),head=toks[0],rest=toks.slice(1).join(' ');
+    if(/\bverb\b/.test(pos)&&/^[a-z]+$/.test(head))verb(head).forEach(f=>add(rest?f+' '+rest:f));
+    else if(/noun/.test(pos)&&toks.length===1){add(base);add(IRREG[base]?IRREG[base].filter(w=>w!==base)[0]:/(s|x|z|ch|sh)$/.test(base)?base+'es':/[^aeiou]y$/.test(base)?base.slice(0,-1)+'ies':base+'s')}
+    else add(base);
+  }
+  (x&&Array.isArray(x.forms)?x.forms:[]).forEach(add);
+  return out.slice(0,5);
+}
 function vocabMatcher(v){
-  const forms=[];v.forEach((x,k)=>[x.w,x.base].forEach(f=>{f=str(f).toLowerCase();if(f.length>1)forms.push({f,k})}));
-  if(!forms.length)return null;
-  const uniq=[...new Set(forms.map(o=>o.f))].sort((a,b)=>b.length-a.length);
-  const re=new RegExp('\\b('+uniq.map(f=>f.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+(/\s/.test(f)?'':"(?:s|es|ed|d|ing|er|est|ly|'s)?")).join('|')+')\\b','gi');
-  return{re,find:m=>{const l=m.toLowerCase();let best=-1,bl=0;forms.forEach(o=>{if(l.startsWith(o.f)&&o.f.length>bl){best=o.k;bl=o.f.length}});return best}};
+  const list=[];
+  v.forEach((x,k)=>{const s=formSources(x);if(s.length)list.push({k,s,n:Math.max(...s.map(o=>o.n)),len:Math.max(str(x.w).length,str(x.base).length),one:new RegExp('^(?:'+s.map(o=>o.src).join('|')+')$','i')})});
+  if(!list.length)return null;
+  /* Phrases and longer words go first, so "lit a lamp" wins over a plain "lit". */
+  list.sort((a,b)=>b.n-a.n||b.len-a.len);
+  const re=new RegExp('\\b(?:'+list.map(o=>o.s.map(z=>z.src).join('|')).join('|')+')\\b','gi');
+  return{re,find:m=>{const o=list.find(o=>o.one.test(m));return o?o.k:-1},tone:k=>v[k]&&v[k].hl==='orange'?' vo':''};
 }
 function markText(t,vm,plain){
   t=String(t||'');if(!vm)return esc(t);
   let out='',last=0,m;vm.re.lastIndex=0;
   while((m=vm.re.exec(t))){
-    const k=vm.find(m[0]);
-    out+=esc(t.slice(last,m.index))+(k<0?esc(m[0]):plain?`<b class="vb">${esc(m[0])}</b>`:`<mark class="vw" data-act="vword" data-v="${k}">${esc(m[0])}</mark>`);
+    const k=vm.find(m[0]),o=k<0?'':vm.tone(k);
+    out+=esc(t.slice(last,m.index))+(k<0?esc(m[0]):plain?`<b class="vb${o}">${esc(m[0])}</b>`:`<mark class="vw${o}" data-act="vword" data-v="${k}">${esc(m[0])}</mark>`);
     last=m.index+m[0].length;if(!m[0].length)vm.re.lastIndex++;
   }
   return out+esc(t.slice(last));
@@ -2742,12 +2813,14 @@ function showReading(it){
   const v=Array.isArray(it.vocab)?it.vocab:[];const vm=vocabMatcher(v);const sents=[];
   const paras=(it.paragraphs||[]).map(p=>`<p>${splitSents(p).map(s=>{const i=sents.length;sents.push(s);return `<span class="sent" data-act="sent" data-s="${i}">${markText(s,vm)}</span>`}).join(' ')}</p>`).join('');
   RD={it,v,sents,playing:false};CUR=it;
+  const two=v.some(x=>x.hl==='orange')&&v.some(x=>x.hl!=='orange'),only=v.length&&v.every(x=>x.hl==='orange');
+  const cw=two?tx('الصفراء أو البرتقالية','yellow or orange'):only?tx('البرتقالية','orange'):tx('الصفراء','yellow');
   openOverlay(`<div class="ov-in s-english" dir="ltr" lang="en">
     <div class="ptop" style="justify-content:space-between"><button class="btn small" data-act="close">Close</button>${v.length?`<button class="btn small" data-act="vocab" data-id="${esc(it.id)}">Words (${v.length})</button>`:''}</div>
     <h2 class="rtitle">${esc(it.title)}</h2>
     <div class="rbar">${TTS.ok?`<button class="btn color big" id="rplay" data-act="rplay">${ICON.speaker} Listen</button><button class="btn" data-act="rspeed">Speed: ${TTS.rate<0.85?'Slow':'Normal'}</button><button class="btn" data-act="voice">Voice</button>`:`<span class="muted" dir="${UI==='en'?'ltr':'rtl'}">${tx('القراءة بصوت غير متاحة في هذا المتصفح.','Reading aloud is not available in this browser.')}</span>`}</div>
-    <p class="rhint" dir="${UI==='en'?'ltr':'rtl'}" lang="${UI}">${UI==='en'?`This is the lesson in simple words; the original text is in your book. ${TTS.ok?'Tap any sentence to hear it':'Read the text'}${v.length?', and tap a yellow word to see its meaning and examples':''}.`
-      :`هذا الدرس بكلمات بسيطة، والنص الأصلي في كتابك. ${TTS.ok?'اضغطي على أي جملة لتسمعيها':'اقرئي النص'}${v.length?'، واضغطي على الكلمة الصفراء لتعرفي معناها وأمثلتها':''}.`}</p>
+    <p class="rhint" dir="${UI==='en'?'ltr':'rtl'}" lang="${UI}">${UI==='en'?`This is the lesson in simple words; the original text is in your book. ${TTS.ok?'Tap any sentence to hear it':'Read the text'}${v.length?`, and tap a ${cw} word to see its meaning and examples`:''}.`
+      :`هذا الدرس بكلمات بسيطة، والنص الأصلي في كتابك. ${TTS.ok?'اضغطي على أي جملة لتسمعيها':'اقرئي النص'}${v.length?`، واضغطي على الكلمة ${cw} لتعرفي معناها وأمثلتها`:''}.`}</p>
     <p class="rhint" id="rmsg" dir="${UI==='en'?'ltr':'rtl'}" lang="${UI}" role="alert" style="color:var(--bad)" hidden></p>
     <article class="reading">${paras}</article></div>`);
 }
@@ -2768,17 +2841,27 @@ function readOne(i){if(!RD||!RD.sents[i])return;readMsg('');setPlay(false);speak
 /* ---------- vocabulary ---------- */
 function vocabCard(x,k,pre){
   const sp=t=>TTS.ok?`<button class="spk" type="button" data-act="say" data-text="${esc(t)}" aria-label="Listen">${ICON.speaker}</button>`:'';
-  const one=vocabMatcher([x]);
-  return `<article class="vcard s-english" dir="ltr" lang="en">
-    <div class="vhead">${sp(x.w)}<div><div class="vword">${esc(x.w)}</div>${x.pos?`<div class="vpos">${esc(x.pos)}</div>`:''}</div></div>
+  const one=vocabMatcher([x]),o=x.hl==='orange'?' vo':'';
+  const nf=niceForms(x);
+  return `<article class="vcard s-english${o}" dir="ltr" lang="en">
+    <div class="vhead">${sp(x.w)}<div><div class="vword"><span class="vhl${o}">${esc(x.w)}</span></div>${x.pos?`<div class="vpos">${esc(x.pos)}</div>`:''}</div></div>
     <p class="vmean">${esc(x.meaning)}</p>${x.ar?`<p class="var">${tx('بالعربية:','In Arabic:')} <span dir="rtl" lang="ar">${esc(x.ar)}</span></p>`:''}
     ${x.from?`<p class="vsec">In the lesson</p><ul class="vex"><li>${sp(x.from)}<span>${markText(x.from,one,true)}</span></li></ul>`:''}
     ${(x.examples||[]).length?`<p class="vsec">Examples</p><ul class="vex">${x.examples.map(e=>`<li>${sp(e)}<span>${markText(e,one,true)}</span></li>`).join('')}</ul>`:''}
     <p class="vsec">Your turn: use “${esc(x.w)}” in a sentence</p>
-    <div class="yours"><input class="in" id="${pre}ys${k}" dir="ltr" autocomplete="off" aria-label="Your sentence with ${esc(x.w)}" placeholder="Write your sentence here">
-      ${S.sample?`<button class="btn small color" type="button" data-act="vcheck" data-k="${k}" data-pre="${pre}">Check my sentence</button>`:''}
-      <p class="vfeed" id="${pre}yf${k}" aria-live="polite"></p></div>
+    ${nf.length>1?`<p class="vany">Any form is fine: ${nf.map(esc).join(', ')}</p>`:''}
+    <div class="yours"><input class="in" id="${pre}ys${k}" data-vk="${k}" data-pre="${pre}" dir="ltr" autocomplete="off" autocapitalize="sentences" aria-label="Your sentence with ${esc(x.w)}" placeholder="Write your sentence here">
+      <button class="btn small color" type="button" data-act="vcheck" data-k="${k}" data-pre="${pre}">Check my sentence</button>
+      <div class="vfeed" id="${pre}yf${k}" aria-live="polite"></div></div>
   </article>`;
+}
+/* The words shown in yellow (from the book) first, then the orange ones, each under its own heading when both exist. */
+function vocabGroups(v,pre){
+  const ix=v.map((x,k)=>k),ye=ix.filter(k=>v[k].hl!=='orange'),or=ix.filter(k=>v[k].hl==='orange');
+  const grid=ks=>`<div class="vlist">${ks.map(k=>vocabCard(v[k],k,pre)).join('')}</div>`;
+  if(!or.length||!ye.length)return grid(ix);
+  return `<h3 class="vgroup"><span class="vhl">${tx('الكلمات الصفراء','Yellow words')}</span> <small>${ye.length}</small></h3>${grid(ye)}
+    <h3 class="vgroup"><span class="vhl vo">${tx('الكلمات البرتقالية','Orange words')}</span> <small>${or.length}</small></h3>${grid(or)}`;
 }
 function showVocab(it){
   stopSpeak();
@@ -2789,37 +2872,124 @@ function showVocab(it){
     <div class="ptop" style="justify-content:space-between"><button class="btn small" data-act="close">Close</button>
       <span style="display:flex;gap:6px">${(it.paragraphs||[]).length?`<button class="btn small" data-act="vread">${ICON.speaker} Lesson</button>`:''}${v.length>=2?`<button class="btn small color" data-act="vgame">Word game</button>`:''}</span></div>
     <h2 class="rtitle">Words: ${esc(it.title)}</h2>
-    <p class="rhint" dir="${UI==='en'?'ltr':'rtl'}" lang="${UI}">${it.highlighted===false?tx('لم تظهر كلمات مظللة بالأصفر في الصور، فاختيرت كلمات قد تكون جديدة عليها.','No words were highlighted in yellow in the photos, so words that may be new to her were chosen.'):tx('الكلمات المظللة بالأصفر في الدرس، مع معناها وأمثلة عليها.','The words highlighted in yellow in the lesson, with their meanings and examples.')}</p>
-    ${v.length?`<div class="vlist">${v.map((x,k)=>vocabCard(x,k,'l')).join('')}</div>`:`<p class="empty">${tx('لا توجد كلمات لهذا الدرس.','This lesson has no words.')}</p>`}</div>`);
+    <p class="rhint" dir="${UI==='en'?'ltr':'rtl'}" lang="${UI}">${it.highlighted===false?tx('لم تظهر كلمات مظللة بالأصفر في الصور، فاختيرت كلمات قد تكون جديدة عليها.','No words were highlighted in yellow in the photos, so words that may be new to her were chosen.'):v.some(x=>x.hl==='orange')?tx('الكلمات المظللة بالأصفر والبرتقالي في الدرس، مع معناها وأمثلة عليها.','The words highlighted in yellow and orange in the lesson, with their meanings and examples.'):tx('الكلمات المظللة بالأصفر في الدرس، مع معناها وأمثلة عليها.','The words highlighted in yellow in the lesson, with their meanings and examples.')}</p>
+    ${v.length?vocabGroups(v,'l'):`<p class="empty">${tx('لا توجد كلمات لهذا الدرس.','This lesson has no words.')}</p>`}</div>`);
+}
+/* ---------- checking her own sentence ----------
+   This works with no Claude at all, because the student's copy is signed out. Any tense or form of the word counts
+   ("voyages", "tossed", "lit the lamp"): what matters is that the word is there and the sentence is a real sentence.
+   When Claude is in the page, a sentence that passes these checks also gets Claude's opinion on the meaning. */
+const COMMON_W=new Set('i you he she it we they me him her us them my your his its our their this that these those a an the and but or so because when then if to of in on at by for with from up down into out over under after before about not no yes very too all some many much more one two three here there what who where why how'.split(' '));
+const VERB_W=new Set('am is are was were be been being have has had do does did can could will would shall should may might must go went come came see saw look like love want need make made take took get got give gave put eat ate run ran play say said tell told think thought know knew feel felt find found sit sat stand stood walk swim swam help keep kept hold held bring brought buy bought read write wrote sleep slept wake woke sing sang dance cry laugh smile open close start stop wait watch hear heard listen ride rode fly flew jump climb carry wear wore draw drew build built call ask answer learn try use show leave left stay move pull push throw threw catch caught grow grew fall fell hope wish clean wash cook drink drank begin began win won lose lost send sent meet met pay paid sell sold spend spent fix let cut hit hurt shut set become became forget forgot fight fought teach taught break broke choose chose drive drove feed fed hide hid lead led mean meant ring rang shake shook shine shone speak spoke tear tore understand understood enjoy visit live miss share thank turn bake paint pick talk work smell taste touch kick hug lift fill hate own plan rest cross wave hurry worry care remember'.split(' '));
+const SUBJ_W=['i','you','we','they','he','she','it'];
+function sentWords(s){return str(s).toLowerCase().replace(/[‘’]/g,"'").match(/[a-z]+(?:'[a-z]+)?/g)||[]}
+function hasVerb(words,x){
+  if(/\bverb\b/.test(str(x.pos).toLowerCase()))return true;
+  return words.some((w,i)=>VERB_W.has(w)||/'(s|m|re|ve|ll|d|t)$/.test(w)||(w.length>3&&/(ed|ing)$/.test(w))
+    ||(w.length>2&&/[^s]s$/.test(w)&&!COMMON_W.has(w))||(i>0&&SUBJ_W.includes(words[i-1])&&!COMMON_W.has(w)));
+}
+function editDist(a,b){
+  if(Math.abs(a.length-b.length)>2)return 9;
+  let p=Array.from({length:b.length+1},(_,j)=>j);
+  for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}
+  return p[b.length];
+}
+/* A word that is one or two letters away from the vocabulary word: probably the word, misspelled. */
+function nearMiss(words,x){
+  const forms=new Set();
+  [x.w,x.base].concat(Array.isArray(x.forms)?x.forms:[]).forEach(f=>str(f).toLowerCase().split(/\s+/).filter(t=>t.length>3&&!ARTICLES.includes(t)).forEach(t=>inflect(t).forEach(z=>forms.add(z))));
+  for(const w of words){
+    if(w.length<4||COMMON_W.has(w)||VERB_W.has(w))continue;
+    for(const f of forms)if(editDist(w,f)<=(f.length>=7?2:1))return w;
+  }
+  return '';
+}
+/* Small fixes she can learn from: capital letter, "I", a/an, a doubled word, the full stop. */
+function tidySentence(s){
+  let t=str(s).replace(/\s+/g,' ').trim().replace(/\s+([,.!?;:])/g,'$1');
+  t=t.replace(/\bi\b/g,'I');
+  t=t.replace(/\b([Aa]n?)\s+([A-Za-z]+)/g,(m,art,w)=>{
+    const lw=w.toLowerCase();
+    const an=/^(hour|honest|honor|honour|heir)/.test(lw)||(/^[aeiou]/.test(lw)&&!/^(uni|use|usu|uti|eu|one|once|ewe|u[bcfhjkqrst][aeiou])/.test(lw));
+    const want=an?'an':'a';if(art.toLowerCase()===want)return m;
+    return (art[0]==='A'?want[0].toUpperCase()+want.slice(1):want)+' '+w;
+  });
+  t=t.replace(/\b([A-Za-z]+)\s+\1\b/gi,(m,w)=>/^(very|had|that|so|really|far|no|bye|ha|go|knock)$/i.test(w)?m:w);
+  t=t.charAt(0).toUpperCase()+t.slice(1);
+  t=t.replace(/([.!?]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase());
+  if(!/[.!?]["'”’)]*$/.test(t))t+='.';
+  return t;
+}
+function localSentenceCheck(said,x){
+  const s=str(said).replace(/\s+/g,' ').trim(),words=sentWords(s);
+  if(!words.length)return{ok:false,code:'empty'};
+  const re=wordRegex(x),m=re&&re.exec(s.replace(/[‘’]/g,"'"));
+  if(!m){const near=nearMiss(words,x);return near?{ok:false,code:'spell',near}:{ok:false,code:'missing'}}
+  if(words.length<3)return{ok:false,code:'short'};
+  const flat=t=>sentWords(t).join(' ');
+  if([x.from].concat(x.examples||[]).some(e=>e&&flat(e)===words.join(' ')))return{ok:false,code:'copy'};
+  if(!hasVerb(words,x))return{ok:false,code:'verb'};
+  const cues=(Array.isArray(x.cues)?x.cues:[]).map(str).filter(Boolean);
+  const shows=cues.length?cues.some(c=>{const r=wordRegex({w:c});return r&&r.test(s)}):null;
+  const better=tidySentence(s);
+  return{ok:true,code:'ok',found:m[0],better:better===s?'':better,shows};
+}
+function sentenceFeedback(r,x){
+  const g=(f,m)=>kid().boy?m:f,w=esc(x.w),nf=niceForms(x).map(esc).join(', ');
+  const ar=t=>UI==='ar'&&t?`<span class="vfar" dir="rtl" lang="ar">${t}</span>`:'';
+  const msg={
+    empty:['Write a sentence first.',g('اكتبي جملة أولاً.','اكتب جملة أولاً.')],
+    missing:[`I can’t find “${w}” in your sentence. You can use it in any form: ${nf}.`,g(`لم أجد كلمة ${w} في جملتك. استعمليها بأي صيغة تحبينها.`,`لم أجد كلمة ${w} في جملتك. استعملها بأي صيغة تحبها.`)],
+    spell:[`Almost! Check the spelling: you wrote “${esc(r.near)}”. The word is “${w}”.`,g(`قريبة جداً! انتبهي للتهجئة: كتبتِ ${esc(r.near)}، والكلمة هي ${w}.`,`قريب جداً! انتبه للتهجئة: كتبت ${esc(r.near)}، والكلمة هي ${w}.`)],
+    short:['Good start! Add more words to make a full sentence: who? what happened?',g('بداية جميلة! أضيفي كلمات أكثر لتصير جملة كاملة: مَن؟ وماذا حدث؟','بداية جميلة! أضف كلمات أكثر لتصير جملة كاملة: مَن؟ وماذا حدث؟')],
+    copy:['That is the example sentence. Now write one of your own!',g('هذه جملة المثال. اكتبي جملة من عندك.','هذه جملة المثال. اكتب جملة من عندك.')],
+    verb:['Your sentence needs an action word (a verb), like is, was, saw or went.',g('جملتك تحتاج إلى فعل، مثل is أو was أو saw أو went.','جملتك تحتاج إلى فعل، مثل is أو was أو saw أو went.')]
+  };
+  if(!r.ok){const t=msg[r.code]||msg.empty;return{cls:'bad',html:`<span>${t[0]}</span>${ar(t[1])}`}}
+  const ex=str((x.examples||[])[0]||x.from);
+  let html=`<span>⭐ Great sentence! You used “${esc(r.found)}”.${r.shows?' You showed what it means, too!':''}</span>`+ar(r.shows?g('جملة رائعة! وأظهرتِ معنى الكلمة أيضاً.','جملة رائعة! وأظهرت معنى الكلمة أيضاً.'):g('جملة رائعة! استعملتِ الكلمة.','جملة رائعة! استعملت الكلمة.'));
+  if(r.better)html+=`<span class="vsmall">A small fix:</span><span class="better">${esc(r.better)}</span>`+ar(g('تصحيح صغير: انظري إلى الجملة بعد التصحيح.','تصحيح صغير: انظر إلى الجملة بعد التصحيح.'));
+  if(r.shows===false&&ex)html+=`<span class="vsmall">Tip: a sentence that shows the meaning is even better, like: “${esc(ex)}”</span>`+ar(g('نصيحة: الجملة التي توضّح معنى الكلمة أجمل، مثل المثال.','نصيحة: الجملة التي توضّح معنى الكلمة أجمل، مثل المثال.'));
+  html+=`<span class="vmeanr"><b>${w}</b> = ${esc(x.meaning)}${x.ar?` · <span dir="rtl" lang="ar">${esc(x.ar)}</span>`:''}</span>`;
+  return{cls:'ok',html};
 }
 async function checkSentence(pre,k){
-  if(!RD||!S.sample)return;const x=RD.v[k];if(!x)return;
+  if(!RD)return;const x=RD.v[k];if(!x)return;
   const inp=document.getElementById(pre+'ys'+k),out=document.getElementById(pre+'yf'+k);if(!inp||!out)return;
-  const said=inp.value.trim();if(!said){out.className='vfeed';out.textContent='Write a sentence first.';return}
+  const said=inp.value.trim(),r=localSentenceCheck(said,x);
+  const show=()=>{const f=sentenceFeedback(r,x);out.className='vfeed '+f.cls;out.innerHTML=f.html};
+  if(!r.ok||!S.sample){show();return}
   out.className='vfeed';out.textContent='Checking…';
   try{
     const B=kid().boy;
-    const r=await S.sample.json(`${kidEn()} is 8 and is learning English; ${B?'his':'her'} first language is Arabic. ${B?'He':'She'} wrote a sentence to practise the word "${x.w}" (${x.pos||'word'}; meaning: ${x.meaning}).
+    const c=await S.sample.json(`${kidEn()} is 8 and is learning English; ${B?'his':'her'} first language is Arabic. ${B?'He':'She'} wrote a sentence to practise the word "${x.w}" (${x.pos||'word'}; meaning: ${x.meaning}).
 The sentence: """${said.slice(0,300)}"""
-Decide whether ${B?'he':'she'} used "${x.w}" correctly and the sentence makes sense. Be warm and brief, and speak to ${B?'him':'her'} directly in very simple English. Ignore a missing capital letter or full stop when deciding, but fix them in "better".
-Reply with only JSON: {"ok":true,"feedback":"one or two short sentences","better":"her sentence corrected, or \\"\\" if it needs no change"}`,{modelTier:'quick',cache:false});
-    const ok=!!(r&&r.ok);out.className='vfeed '+(ok?'ok':'bad');
-    out.innerHTML=esc(str(r&&r.feedback)||(ok?'Great sentence!':'Try again.'))+(str(r&&r.better)?`<span class="better">${esc(str(r.better))}</span>`:'');
-  }catch(e){out.className='vfeed bad';out.textContent=e&&e.code==='cancelled'?'':sampleMsg(e)}
+Decide whether the sentence shows that ${B?'he':'she'} understands what "${x.w}" means, and whether it makes sense. Any tense or form of the word is fine (for example: ${niceForms(x).join(', ')}), and so is any way of using it that fits the meaning: do not ask for the exact form "${x.w}". Be warm and brief, and speak to ${B?'him':'her'} directly in very simple English. Ignore a missing capital letter or full stop when deciding, but fix them in "better".
+Reply with only JSON: {"ok":true,"feedback":"one or two short sentences","better":"the sentence corrected, or \\"\\" if it needs no change"}`,{modelTier:'quick',cache:false});
+    const ok=!!(c&&c.ok);out.className='vfeed '+(ok?'ok':'bad');
+    out.innerHTML=`<span>${esc(str(c&&c.feedback)||(ok?'Great sentence!':'Try again.'))}</span>`+(str(c&&c.better)?`<span class="better">${esc(str(c.better))}</span>`:'')
+      +(ok?`<span class="vmeanr"><b>${esc(x.w)}</b> = ${esc(x.meaning)}${x.ar?` · <span dir="rtl" lang="ar">${esc(x.ar)}</span>`:''}</span>`:'');
+  }catch(e){if(e&&e.code==='cancelled'){out.textContent='';return}show()}
 }
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;const t=e.target;if(!t||!t.dataset||t.dataset.vk==null)return;
+  e.preventDefault();checkSentence(t.dataset.pre,+t.dataset.vk);
+});
 function blankIn(sentence,x){
   const vm=vocabMatcher([x]);if(!vm)return null;vm.re.lastIndex=0;const m=vm.re.exec(sentence);if(!m)return null;
   return{q:sentence.slice(0,m.index)+'_____'+sentence.slice(m.index+m[0].length),word:m[0]};
 }
 function startVocabGame(it){
-  const v=(it.vocab||[]).filter(x=>x.w&&x.meaning);if(v.length<2){toast(tx('الكلمات قليلة للعبة.','Not enough words for a game.'));return}
+  const all=(it.vocab||[]).filter(x=>x.w&&x.meaning);if(all.length<2){toast(tx('الكلمات قليلة للعبة.','Not enough words for a game.'));return}
+  /* A long word list gets a fresh set of 8 words each game, so every round type still fits in 12 rounds. */
+  const v=shuffle(all).slice(0,8);
   const rounds=[];
   rounds.push({type:'match',q:'Match each word to its meaning',pairs:shuffle(v).slice(0,5).map(x=>[x.w,x.meaning])});
-  shuffle(v).forEach(x=>{
+  shuffle(v).slice(0,7).forEach(x=>{
     const pool=(x.examples||[]).concat(x.from?[x.from]:[]);let b=null;
     for(const s of shuffle(pool)){b=blankIn(s,x);if(b)break}
     if(!b)return;
-    const others=shuffle(v.filter(y=>y!==x)).slice(0,3).map(y=>y.w);
+    const others=shuffle(all.filter(y=>y!==x)).slice(0,3).map(y=>y.w);
     rounds.push({type:'choice',q:b.q,choices:[b.word].concat(others),answer:b.word});
   });
   if(TTS.ok)shuffle(v).slice(0,4).forEach(x=>rounds.push({type:'listen',q:'Listen and write the word',answer:x.w}));

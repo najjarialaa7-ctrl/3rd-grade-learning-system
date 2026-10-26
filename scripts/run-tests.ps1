@@ -11,8 +11,11 @@
   ./scripts/run-tests.ps1
 .EXAMPLE
   ./scripts/run-tests.ps1 -Browser "C:\Program Files\Google\Chrome\Application\chrome.exe"
+.EXAMPLE
+  ./scripts/run-tests.ps1 -Only sentence
+  Runs only the tests whose file name contains "sentence".
 #>
-param([string]$Browser)
+param([string]$Browser, [string]$Only)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 if (-not $Browser) {
@@ -44,11 +47,14 @@ $cases = @(
   @('student-copy.test.html', '', 8000),
   @('student-copy-publish.test.html', '', 6000),
   @('weekly-plan-pdf.test.html', '', 250000),
-  @('older-lessons.test.html', '', 6000)
+  @('older-lessons.test.html', '', 6000),
+  @('sentence-check.test.html', '', 6000)
 )
-$failed = 0
+$failed = 0; $ran = 0
 foreach ($c in $cases) {
   $file, $hash, $budget = $c
+  if ($Only -and $file -notlike "*$Only*") { continue }
+  $ran++
   $test = [IO.File]::ReadAllText((Join-Path $root "tests/$file"), $enc)
   $run = Join-Path $tmp ("run-" + $file)
   # The charset comes first: a test that starts with a long ASCII block could otherwise be read in the wrong encoding.
@@ -65,5 +71,5 @@ foreach ($c in $cases) {
   '{0,-40} {1}' -f ($file + $hash), $res
 }
 Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
-if ($failed) { Write-Host "`n$failed of $($cases.Count) failed"; exit 1 }
-Write-Host "`nAll $($cases.Count) passed"
+if ($failed) { Write-Host "`n$failed of $ran failed"; exit 1 }
+Write-Host "`nAll $ran passed"

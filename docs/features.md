@@ -50,8 +50,13 @@ Three tiles under the English table open every reading lesson (texts and vocabul
 
 ## Reading aloud and vocabulary
 - English reading lessons can be heard sentence by sentence, at normal or slow speed. The sentence being read is highlighted.
-- Words highlighted in yellow in the book appear in yellow. Tapping one opens its card: meaning, Arabic meaning, the sentence from the lesson and two examples. The child can also write her own sentence and get feedback from Claude, but only when signed in.
-- A vocabulary game is built from the words: match, fill the blank, and listen and write.
+- Words highlighted in yellow in the book appear in yellow; words the parent marks orange (`hl: "orange"`) appear in orange, and the word list shows the two colours in two groups. Tapping a word opens its card: meaning, Arabic meaning, the sentence from the lesson and two examples.
+- **Her own sentence:** each card has a box to write a sentence with the word. The page checks it on the device, so it works in the student's copy with no Claude:
+  - any tense or form of the word counts: plural, past, present, -ing, irregular forms ("lit" for "light"), a phrase with words in between ("cheer my sister up"), and any extra `forms` the lesson lists;
+  - a missing word, a misspelling (one or two letters off), a sentence that is too short, a copied example, or no verb each get their own hint, in English with an Arabic line;
+  - a right sentence is praised and gets small fixes (capital letter, "I", a/an, the full stop). If the word has `cues`, the page also says whether the sentence shows the meaning, and suggests an example if not. The meaning is repeated in English and Arabic;
+  - when Claude is in the page, a sentence that passes these checks also gets Claude's opinion on the meaning, with any form of the word allowed.
+- A vocabulary game is built from the words: match, fill the blank, and listen and write. Long lists give a fresh set of 8 words each game.
 
 ## Dictation trainer
 - It is built automatically for any lesson whose assessment is a dictation.
