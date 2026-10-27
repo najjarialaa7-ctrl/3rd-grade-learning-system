@@ -8,7 +8,7 @@
   a child's iPad, or on a static web host). This script replaces that block with the snapshot file you give it.
 
   A snapshot has the same shape the app itself produces with the "Update the student's version" button:
-  { v, at, nexUrl, tables, student, weeks[], lessons[], items[] } - see data/README.md.
+  { v, at, nexUrl, tables, student, stars[]?, weeks[], lessons[], items[] } - see data/README.md.
 
 .EXAMPLE
   ./scripts/embed-snapshot.ps1 -Snapshot data/sample/snapshot.json
@@ -28,7 +28,15 @@ if (-not $Out) { $Out = $App }
 $enc = New-Object System.Text.UTF8Encoding $false
 $page = [IO.File]::ReadAllText((Resolve-Path $App), $enc)
 $json = [IO.File]::ReadAllText((Resolve-Path $Snapshot), $enc).Trim()
-$null = $json | ConvertFrom-Json   # stops here if the snapshot is not valid JSON
+# Stop here if the snapshot is not valid JSON. Plain ConvertFrom-Json is not used, because it rejects keys that
+# differ only in case, which a sheet's list of likely wrong answers can have ("Hill street" and "hill street").
+if ($PSVersionTable.PSVersion.Major -ge 6) { $null = $json | ConvertFrom-Json -AsHashtable }
+else {
+  Add-Type -AssemblyName System.Web.Extensions
+  $reader = New-Object System.Web.Script.Serialization.JavaScriptSerializer
+  $reader.MaxJsonLength = 104857600
+  $null = $reader.DeserializeObject($json)
+}
 # Keep the JSON safe inside a <script> tag.
 $json = $json.Replace('</', '<\/').Replace([string][char]0x2028, ' ').Replace([string][char]0x2029, ' ')
 $open = '<script type="application/json" id="snap">'

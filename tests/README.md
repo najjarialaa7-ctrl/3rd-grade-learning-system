@@ -25,5 +25,6 @@ The runner puts four things together into one page: `_harness.js`, the sample sn
 | `weekly-plan-pdf` | A PDF plan is drawn to page images and read; the notes and lesson rows are saved (needs the internet for pdf.js) |
 | `older-lessons` | Past lessons sit in one table per subject, newest first; English is split into reading, grammar, and phonics with dictation |
 | `sentence-check` | Her own sentence is checked with no Claude: any form of the word counts, each kind of slip gets its hint, small fixes; orange and yellow words |
+| `stars` (plain, `#student`) | The parent stars and unstars lessons and tables; the cards at the top open each activity; the student's ticks; the back button; reminders one line per subject |
 
 To run one test: `./scripts/run-tests.ps1 -Only sentence`.

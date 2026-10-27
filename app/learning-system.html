@@ -86,8 +86,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .week-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;justify-content:space-between}
 .week-head h2{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin:0}
 .week-actions{display:flex;flex-wrap:wrap;gap:8px}
-.reminders{margin:0;padding:10px 14px;border-radius:10px;background:color-mix(in srgb,var(--star) 16%,var(--card));display:grid;gap:2px;list-style:none}
-.reminders li::before{content:"• ";color:var(--arabic)}
 .notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:0 22px}
 .note{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:baseline;padding:9px 0;border-top:1px dashed var(--line)}
 .note .dot{width:10px;height:10px;border-radius:3px;background:var(--c);align-self:center}
@@ -611,6 +609,72 @@ details.oldweek .tablewrap{border:0;border-radius:0}
 .rowtools .btn{padding:2px 8px;font-size:.8rem}
 .subj-head .week-actions{gap:8px}
 
+/* the way back to all subjects: its own button, outside the coloured header, kept on screen */
+.subnav{position:sticky;top:8px;z-index:6;display:flex;margin-bottom:-10px;pointer-events:none}
+.homebtn{all:unset;box-sizing:border-box;pointer-events:auto;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--card);color:var(--ink);border:2px solid var(--ink);border-radius:14px;padding:9px 16px;font-family:var(--display);font-weight:700;font-size:1.1rem;line-height:1.2;box-shadow:0 8px 20px -12px rgba(0,0,0,.5)}
+.homebtn svg{width:22px;height:22px;flex:none}
+.homebtn .arr{width:18px;height:18px}
+[dir="ltr"] .homebtn .arr{transform:scaleX(-1)}
+.homebtn:hover{background:var(--tint)}
+
+/* reminders, one line per subject */
+.remlist{margin:0;padding:4px 14px;border-radius:12px;background:color-mix(in srgb,var(--star) 14%,var(--card));list-style:none;display:grid}
+.remlist li{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:4px 14px;align-items:baseline;padding:8px 0;border-top:1px dashed color-mix(in srgb,var(--star) 45%,var(--line))}
+.remlist li:first-child{border-top:0}
+.remsub{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--c,var(--ink));white-space:nowrap}
+button.remsub{cursor:pointer}
+button.remsub:hover{text-decoration:underline}
+.remsub .motif{font-size:.95rem;line-height:1.3;min-width:1.9em;text-align:center;background:var(--tint);border-radius:6px;padding:0 4px}
+.remother .remsub{color:var(--muted)}
+.remtxt{overflow-wrap:anywhere}
+@media (max-width:520px){.remlist li{grid-template-columns:1fr}}
+
+/* today's stars */
+.today{background:color-mix(in srgb,var(--star) 13%,var(--card));border:2px solid color-mix(in srgb,var(--star) 60%,var(--line));border-radius:18px;padding:16px 18px;display:grid;gap:12px}
+.today.quiet{background:transparent;border:1px dashed var(--line);padding:10px 16px}
+.today-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
+.today-head h2{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin:0;display:flex;align-items:center;gap:8px}
+.today.quiet .today-head h2{font-size:1.15rem}
+.today-head h2 svg{width:30px;height:30px;flex:none}
+.today.quiet .today-head h2 svg{width:22px;height:22px}
+.today-head p{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.starcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.starcard{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--c,var(--line));border-radius:16px;padding:12px 14px;display:grid;gap:8px;align-content:start;min-width:0}
+.starcard .sc-top{display:flex;align-items:center;gap:8px;color:var(--c);font-weight:700;font-size:.92rem}
+.starcard .sc-top .motif{font-size:1.15rem;line-height:1.3;min-width:2em;text-align:center;background:var(--tint);border-radius:8px;padding:0 6px}
+.starcard h3{font-family:var(--display);font-size:1.2rem;line-height:1.3;margin:0;overflow-wrap:anywhere}
+.starcard .sc-when{font-size:.82rem;color:var(--muted);margin-top:-4px}
+.starcard .acts{display:flex;flex-wrap:wrap;gap:6px}
+.starcard .acts svg{width:15px;height:15px}
+.sc-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;border-top:1px dashed var(--line);padding-top:8px}
+.sc-done{all:unset;cursor:pointer;font-weight:700;font-size:.88rem;color:var(--muted);border:2px dashed var(--line);border-radius:99px;padding:3px 12px}
+.sc-done:hover{border-color:var(--ok);color:var(--ink)}
+.sc-done.on{background:var(--ok);border:2px solid var(--ok);color:var(--on-c)}
+.starcard.done{background:color-mix(in srgb,var(--ok) 7%,var(--card))}
+.starcard.done h3{color:var(--muted)}
+.starbtn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;margin-inline-end:6px}
+[dir="rtl"] .starbtn{float:right}
+[dir="ltr"] .starbtn{float:left}
+.starbtn svg{width:24px;height:24px}
+.starbtn:hover{background:var(--tint)}
+.starbtn:not(.on) svg path{fill:none;stroke:var(--muted);stroke-width:1.6}
+.starbadge{display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:99px;background:color-mix(in srgb,var(--star) 32%,var(--card));color:var(--ink)}
+.starbadge svg{width:14px;height:14px}
+table.lessons tr.starred td{background:color-mix(in srgb,var(--star) 10%,var(--card))}
+table.lessons tr.flash td{animation:flash 2.2s ease}
+@keyframes flash{0%,40%{background:color-mix(in srgb,var(--star) 45%,var(--card))}}
+@media (max-width:700px){table.lessons tr.starred{background:color-mix(in srgb,var(--star) 10%,var(--card));border-color:color-mix(in srgb,var(--star) 60%,var(--line))}table.lessons tr.starred td{background:transparent}}
+.ttcard{position:relative}
+.ttcard.starred{border-color:var(--star)}
+.ttstar{position:absolute;top:6px;inset-inline-end:8px}
+.ttstar svg{width:20px;height:20px}
+.ttstarchip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border:2px solid var(--line);background:var(--card);border-radius:99px;padding:3px 12px;font-weight:700;font-family:var(--read)}
+.ttstarchip svg{width:16px;height:16px}
+.ttstarchip:not(.on) svg path{fill:none;stroke:var(--muted);stroke-width:1.8}
+.ttstarchip.on{border-color:var(--star);background:color-mix(in srgb,var(--star) 18%,var(--card))}
+.ttbadge.starred{border-color:var(--star);background:color-mix(in srgb,var(--star) 22%,var(--card))}
+.ttbadge svg{width:12px;height:12px;vertical-align:-1px;margin-inline-end:2px}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
@@ -622,7 +686,7 @@ details.oldweek .tablewrap{border:0;border-radius:0}
     </div>
   </header>
 
-  <section class="week" id="week"></section>
+  <section class="today" id="today" hidden></section> <section class="week" id="week"></section>
 
   <main id="view"></main>
   <p class="foot" id="foot"></p>
@@ -1258,7 +1322,7 @@ details.oldweek .tablewrap{border:0;border-radius:0}
 /* ---------- The student's copy: the page rebuilds itself with the lessons embedded, for viewers without a Claude account ---------- */
 const SKEL='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
 const HEAD_HTML='<title>نظام التعلّم للصف الثالث</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">\n';
-const BODY_HTML='<div class="wrap" id="app" dir="rtl" lang="ar">\n  <header class="cover" id="cover">\n    <div>\n      <h1>نظام التعلّم للصف الثالث</h1>\n      <p class="sub">ملفات المدرسة والخطة الأسبوعية وصور الدروس، مع ألعاب وأوراق تدريب لكل مادة.</p>\n    </div>\n  </header>\n\n  <section class="week" id="week"></section>\n\n  <main id="view"></main>\n  <p class="foot" id="foot"></p>\n</div>\n\n<div class="overlay" id="overlay" hidden></div>\n<div class="modal" id="modal" hidden></div>\n<div class="toast" id="toast" role="status" hidden></div>\n';
+const BODY_HTML='<div class="wrap" id="app" dir="rtl" lang="ar">\n  <header class="cover" id="cover">\n    <div>\n      <h1>نظام التعلّم للصف الثالث</h1>\n      <p class="sub">ملفات المدرسة والخطة الأسبوعية وصور الدروس، مع ألعاب وأوراق تدريب لكل مادة.</p>\n    </div>\n  </header>\n\n  <section class="today" id="today" hidden></section> <section class="week" id="week"></section>\n\n  <main id="view"></main>\n  <p class="foot" id="foot"></p>\n</div>\n\n<div class="overlay" id="overlay" hidden></div>\n<div class="modal" id="modal" hidden></div>\n<div class="toast" id="toast" role="status" hidden></div>\n';
 const LS=String.fromCharCode(0x2028),PS=String.fromCharCode(0x2029);
 const safeJson=o=>JSON.stringify(o).replace(/</g,'\\u003c').split(LS).join('\\u2028').split(PS).join('\\u2029');
 function pageSource(snap){
@@ -1314,7 +1378,8 @@ const ICON={
   stop:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:16px;height:16px;vertical-align:-3px"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg>',
   plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
-  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C5.5 4.5 8.5 4.5 12 6.5c3.5-2 6.5-2 9-1v13c-2.5-1-5.5-1-9 1-3.5-2-6.5-2-9-1z"/><path d="M12 6.5v13"/></svg>'
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C5.5 4.5 8.5 4.5 12 6.5c3.5-2 6.5-2 9-1v13c-2.5-1-5.5-1-9 1-3.5-2-6.5-2-9-1z"/><path d="M12 6.5v13"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg>'
 };
 const STAR_PATH='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z';
 function star(on,cls){return `<svg class="${cls||''}" viewBox="0 0 24 24" aria-hidden="true"><path d="${STAR_PATH}" fill="${on?'var(--star)':'var(--line)'}"/></svg>`}
@@ -1378,13 +1443,14 @@ function loadSnap(){
   if(!SNAP)return false;
   S.items=(SNAP.items||[]).slice().sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
   S.weeks=(SNAP.weeks||[]).slice();S.lessons=(SNAP.lessons||[]).slice();
-  S.settings={nexUrl:SNAP.nexUrl||'',tables:SNAP.tables,student:SNAP.student};S.results=loadLocal();S.loaded=true;S.fromSnap=true;
+  S.settings={nexUrl:SNAP.nexUrl||'',tables:SNAP.tables,student:SNAP.student,stars:SNAP.stars};S.results=loadLocal();S.loaded=true;S.fromSnap=true;
   return true;
 }
 const SNAP_KINDS=['reading','grammar','phonics','visual','outline','sheet','game'];
 function buildSnap(){
   const pick=(o,keys)=>{const r={};keys.forEach(k=>{if(o[k]!==undefined)r[k]=o[k]});return r};
-  return{v:1,at:nowIso(),nexUrl:safeUrl(S.settings&&S.settings.nexUrl)||'',tables:ttTables(),student:(S.settings&&S.settings.student)||null,
+  const st=starsList();
+  return{v:1,at:nowIso(),nexUrl:safeUrl(S.settings&&S.settings.nexUrl)||'',tables:ttTables(),student:(S.settings&&S.settings.student)||null,...(st.length?{stars:st}:{}),
     weeks:S.weeks.slice(0,20).map(w=>pick(w,['id','weekOf','title','notes','reminders','createdAt'])),
     lessons:S.lessons.map(l=>pick(l,['id','week','weekOf','subject','order','period','title','pages','homework','assess','assessType','reading','etype','createdAt'])),
     items:S.items.filter(i=>SNAP_KINDS.includes(i.kind)).map(i=>{const o=Object.assign({},i);delete o.files;return o})};
@@ -1462,7 +1528,7 @@ function subscribe(){
   db.collection('lessons').onSnapshot(snap=>{
     S.lessons=snap.docs.map(d=>Object.assign({id:d.id},d.data()));renderAll();
   },()=>{});
-  db.doc('settings/main').onSnapshot(d=>{S.settings=d.exists?d.data():{};renderNex()},()=>{});
+  db.doc('settings/main').onSnapshot(d=>{S.settings=d.exists?d.data():{};renderCover();renderView()},()=>{});
   db.collection('results').onSnapshot(snap=>{
     const r={};snap.docs.forEach(d=>{r[d.id]=d.data()});S.results=r;renderAll();
   },()=>{});
@@ -1472,7 +1538,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:21,date:'2026-10-26'};
+const APP_VERSION={n:22,date:'2026-10-27'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -1511,6 +1577,42 @@ function renderCover(){
 }
 
 function weekTitle(w){return str(w.title)||(tx('أسبوع ','Week of ')+fmtDay(w.weekOf))}
+/* The plan's reminders, one line per subject. A reminder that covers two subjects ("… — وإملاء عربي: …",
+   "عربي: … · علوم: …") is split, each part goes under its subject with the subject's name and colour in front,
+   and the subjects follow their usual order. A part that names no subject (for example art) keeps its own label. */
+const REM_SUBJ=[['english',/إنجليزي|انجليزي|\bEnglish\b/i],['islamic',/إسلامي|اسلامي|\bIslamic\b/i],['arabic',/عربي|العربية|\bArabic\b/i],
+  ['science',/علوم|\bScience\b/i],['math',/رياضيات|ماث|\bMaths?\b/i],['computer',/حاسوب|حاسب|كمبيوتر|\bComputer\b|\bICT\b/i]];
+function reminderRows(rem){
+  const rows=new Map();
+  const add=(sid,label,text)=>{const k=sid||'x:'+label;if(!rows.has(k))rows.set(k,{sid,label,parts:[]});if(text)rows.get(k).parts.push(text)};
+  rem.forEach(r=>{
+    let last='';
+    String(r).split(/\s+[—–]\s+|\s+·\s+|\s*؛\s*/).map(s=>s.trim()).filter(Boolean).forEach(seg=>{
+      seg=seg.replace(/^و(?=(إملاء|املاء|تقييم|اختبار|مشروع|حفظ|تسميع|واجب))/,'');
+      const ci=seg.search(/[:：]/),hasHead=ci>0&&ci<40;
+      const head=hasHead?seg.slice(0,ci):seg.slice(0,30),rest=hasHead?seg.slice(ci+1).trim():seg;
+      let sid='';for(const [id,re] of REM_SUBJ)if(re.test(head)){sid=id;break}
+      if(!sid&&!hasHead&&last)sid=last;
+      if(sid){
+        /* Drop the words that name the subject ("إنجليزي", "الإسلامية", "اللغة العربية"); keep the rest ("إملاء"). */
+        const h=(hasHead?head:'').split(/\s+/).filter(w=>w&&!REM_SUBJ.some(([,re])=>re.test(w))&&!/^(اللغة|التربية|مادة)$/.test(w)).join(' ');
+        add(sid,'',hasHead?(h?h+': ':'')+rest:seg);last=sid;
+      }else{
+        const m=/^(.*?)\s*\(([^)]*)\)\s*$/.exec(hasHead?head:'');
+        add('',m?m[1].trim():(hasHead?head.trim():''),m?rest+' ('+m[2].trim()+')':rest);last='';
+      }
+    });
+  });
+  const order=SUBJECTS.map(s=>s.id),pos=x=>x.sid?order.indexOf(x.sid):99;
+  return [...rows.values()].filter(x=>x.parts.length).sort((a,b)=>pos(a)-pos(b));
+}
+function reminderList(rem){
+  return `<ul class="remlist" aria-label="${tx('تذكيرات الأسبوع','This week’s reminders')}">${reminderRows(rem).map(x=>{
+    const s=SUBJ[x.sid];
+    const lab=s?`<button class="remsub" data-act="go" data-id="${s.id}"><span class="motif" dir="${s.md}">${esc(s.motif)}</span>${esc(sName(s))}</button>`
+      :`<span class="remsub">${esc(x.label||tx('أخرى','Other'))}</span>`;
+    return `<li class="${s?'s-'+s.id:'remother'}">${lab}<span class="remtxt">${x.parts.map(esc).join(' · ')}</span></li>`}).join('')}</ul>`;
+}
 function fileButtons(files,label){
   return (files||[]).map((f,i)=>`<a class="btn small" href="${blobUrl(esc(f.id))}" target="_blank" rel="noopener">${esc(files.length>1?label+' '+(i+1):label)} ${ICON.out}</a>`).join('');
 }
@@ -1538,7 +1640,7 @@ function renderWeek(){
   const old=S.weeks.slice(1,13);
   const oldHtml=old.length?`<details class="old"><summary>${tx('الخطط السابقة','Earlier plans')} (${old.length})</summary><ul>${old.map(o=>`<li><span dir="auto">${esc(weekTitle(o))}</span>${fileButtons(o.files,tx('فتح','Open'))}${canEditData()?`<button class="btn small quiet danger" data-act="delweek" data-id="${esc(o.id)}">${tx('حذف','Delete')}</button>`:''}</li>`).join('')}</ul></details>`:'';
   el.innerHTML=`<div class="week-head"><div><span class="eyebrow">${eyebrow} · ${tx('تبدأ','starts')} ${esc(fmtDay(w.weekOf,{weekday:'long',day:'numeric',month:'long'}))}</span><h2 dir="auto">${esc(weekTitle(w))}</h2></div><div class="week-actions">${acts}${up}</div></div>
-  ${rem.length?`<ul class="reminders" dir="auto">${rem.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`:''}
+  ${rem.length?reminderList(rem):''}
   ${hint}${oldHtml}`;
 }
 
@@ -1565,7 +1667,96 @@ function imagesOf(it){return (it.files||[]).filter(f=>String(f.type||'').startsW
 function renderView(){
   const v=$('#view');
   const s=SUBJ[S.route];
+  renderToday();
   v.innerHTML=s?renderSubject(s):renderHome();
+}
+
+/* ---------- today's stars ----------
+   The parent stars a lesson or a times table, and it shows at the top of the first page («نجوم اليوم») so the
+   student opens it straight away instead of looking for it. The lesson stays in its table, with a star on its row,
+   and the parent removes the star when it is done. Stars live in settings/main.stars and go into the student's copy. */
+function starsList(){
+  const s=S.settings&&S.settings.stars;
+  return (Array.isArray(s)?s:[]).filter(x=>x&&((x.t==='lesson'&&typeof x.id==='string'&&x.id)||(x.t==='tt'&&x.n!==''&&Number.isInteger(+x.n))));
+}
+const sameStar=(x,t,v)=>x.t===t&&(t==='tt'?+x.n===+v:x.id===v);
+const isStarred=(t,v)=>starsList().some(x=>sameStar(x,t,v));
+const starKey=x=>(x.t==='tt'?'tt'+x.n:'l'+x.id)+'@'+(x.at||'');
+async function toggleStar(t,v){
+  if(!canEditData())return;
+  const on=isStarred(t,v),list=starsList();
+  const next=on?list.filter(x=>!sameStar(x,t,v)):list.concat([t==='tt'?{t,n:+v,at:nowIso()}:{t,id:String(v),at:nowIso()}]);
+  const prev=S.settings;S.settings=Object.assign({},S.settings||{},{stars:next});
+  const redraw=()=>{renderCover();renderView();if(TT&&TT.mode==='home')ttHome();else if(TT&&TT.mode==='learn')ttLearnDraw()};
+  redraw();
+  try{
+    await S.db.doc('settings/main').set(S.settings);
+    toast(on?tx('أُزيلت النجمة.','Star removed.'):tx(`أُضيفت إلى نجوم اليوم. تظهر في ${copyName()} بعد «تحديث ${copyName()}».`,`Added to today’s stars. It shows in ${copyName()} after “Update ${copyName()}”.`));
+  }catch(e){S.settings=prev;redraw();toast(tx('لم تُحفظ النجمة. حاولوا مرة أخرى.','The star was not saved. Please try again.'))}
+}
+/* The student ticks a star when she finishes it. The tick stays on her device; a new star starts unticked. */
+function starsDone(){try{return JSON.parse(localStorage.getItem('nay-stars')||'{}')||{}}catch(e){return{}}}
+function toggleStarDone(key){
+  const d=starsDone();if(d[key])delete d[key];else d[key]=1;
+  try{localStorage.setItem('nay-stars',JSON.stringify(d))}catch(e){}
+  renderToday();
+}
+/* Every activity a lesson has, as buttons: reading and words, rule or phonics card, picture guide, map, sheet, game, dictation. */
+function lessonActs(l){
+  const b=[];
+  const btn=(act,id,label)=>`<button class="btn small${b.length?'':' color'}" data-act="${act}" data-id="${esc(id)}">${label}</button>`;
+  const rd=lessonItems(l.id,'reading')[0];
+  if(rd){b.push(btn('open',rd.id,`${ICON.speaker} ${tx('اسمعي','Listen')}`));if((rd.vocab||[]).length)b.push(btn('vocab',rd.id,`${tx('الكلمات','Words')} (${rd.vocab.length})`))}
+  [['grammar',tx('القاعدة','Rule')],['phonics',tx('الكلمات والقواعد','Words & rules')],['visual',tx('الشرح المصوّر','Picture guide')],['outline',tx('المخطط','Map')],['sheet',tx('ورقة التدريب','Practice sheet')],['game',tx('اللعبة','Game')]]
+    .forEach(([k,label])=>{const it=lessonItems(l.id,k)[0];if(it)b.push(btn('open',it.id,label))});
+  if(dictOf(l))b.push(btn('dict',l.id,tx('مدرّب الإملاء','Dictation trainer')));
+  return b;
+}
+function starCard(x,own){
+  const key=starKey(x),done=!!starsDone()[key];
+  const rm=own?`<button class="btn small quiet" data-act="star" data-t="${x.t}" data-v="${esc(x.t==='tt'?x.n:x.id)}">${tx('إزالة النجمة','Remove star')}</button>`:'';
+  const tick=`<button class="sc-done${done?' on':''}" data-act="stardone" data-k="${esc(key)}" aria-pressed="${done}">${done?'✓ '+tx('أنهيتُه','Done'):tx('أنهيتِه؟ اضغطي هنا','Finished? Tap here')}</button>`;
+  if(x.t==='tt'){
+    const n=+x.n;
+    return `<article class="starcard s-math${done?' done':''}"><div class="sc-top"><span class="motif" dir="ltr">×</span><span>${tx('جدول الضرب','Times tables')}</span></div>
+      <h3>${tx(`جدول ${n}`,`The ${n} times table`)}</h3>
+      <div class="acts"><button class="btn small color" data-act="startt" data-n="${n}" data-mode="learn">${tx('تعرّفي على الجدول','Learn the table')}</button><button class="btn small" data-act="startt" data-n="${n}" data-mode="practice">${tx('تدريب ذكي','Smart practice')}</button><button class="btn small" data-act="startt" data-n="${n}" data-mode="memory">${tx('لعبة الذاكرة','Memory match')}</button></div>
+      <div class="sc-foot">${tick}${rm}</div></article>`;
+  }
+  const l=S.lessons.find(y=>y.id===x.id),s=l&&SUBJ[l.subject];
+  if(!l||!s)return own?`<article class="starcard"><h3>${tx('درس محذوف','A deleted lesson')}</h3><div class="sc-foot">${rm}</div></article>`:'';
+  const cur=curWeek(),when=cur&&l.week===cur.id?tx('درس هذا الأسبوع','This week’s lesson'):tx('درس سابق','Older lesson')+' · '+esc(whenLabel(l));
+  return `<article class="starcard s-${s.id}${done?' done':''}"><div class="sc-top"><span class="motif" dir="${s.md}">${esc(s.motif)}</span><span>${esc(sName(s))}</span></div>
+    <h3 dir="auto">${esc(l.title)}</h3><span class="sc-when"><span dir="auto">${when}</span>${str(l.pages)?' · '+tx('ص','p.')+' '+esc(l.pages):''}</span>
+    <div class="acts">${lessonActs(l).join('')}<button class="btn small quiet" data-act="golesson" data-id="${esc(l.id)}">${tx('في جدول المادة','In the subject table')}</button></div>
+    <div class="sc-foot">${tick}${rm}</div></article>`;
+}
+function renderToday(){
+  const el=$('#today');if(!el)return;
+  const off=()=>{el.hidden=true;el.innerHTML=''};
+  if(S.route||(!S.loaded&&!S.noDb))return off();
+  const own=canEditData(),cards=starsList().map(x=>starCard(x,own)).filter(Boolean);
+  if(!cards.length&&!own)return off();
+  const pub=own&&S.artifact&&S.canEditPage&&snapStale()?`<button class="btn small primary" data-act="studentpub">${tx('تحديث ','Update ')}${esc(copyName())}</button>`:'';
+  const sub=cards.length?(own?tx(`تظهر هذه في أعلى ${copyName()}. أزيلوا النجمة حين ينتهي الدرس.`,`These show at the top of ${copyName()}. Remove a star when it is done.`):tx('ابدئي من هنا: هذه دروسك لليوم.','Start here: these are your lessons for today.'))
+    :tx(`ضعوا نجمة بجانب أي درس في جداول المواد، أو بجانب جدول في مدرّب جدول الضرب، فيظهر هنا في أعلى ${copyName()}.`,`Star any lesson in the subject tables, or a table in the times-tables trainer, and it shows here at the top of ${copyName()}.`);
+  el.hidden=false;el.classList.toggle('quiet',!cards.length);
+  el.setAttribute('aria-label',tx('نجوم اليوم','Today’s stars'));
+  el.innerHTML=`<div class="today-head"><div><h2>${star(true)} ${tx('نجوم اليوم','Today’s stars')}</h2><p>${sub}</p></div>${pub}</div>${cards.length?`<div class="starcards">${cards.join('')}</div>`:''}`;
+}
+/* Open the subject page at this lesson's row, so she sees where it lives. */
+function goLesson(id){
+  const l=S.lessons.find(y=>y.id===id);if(!l)return;
+  go(l.subject);
+  setTimeout(()=>{const r=[...document.querySelectorAll('tr[data-lid]')].find(t=>t.dataset.lid===id);if(!r)return;
+    try{r.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){}r.classList.add('flash');setTimeout(()=>r.classList.remove('flash'),2400)},60);
+}
+function startTT(n,mode){ttOpen();TT.sel=n;if(mode==='learn')ttLearn(n);else ttMode(mode)}
+/* The star on a lesson row: a button for the parent, a badge for the student. */
+function starCtl(l){
+  const on=isStarred('lesson',l.id);
+  if(canEditData())return `<button class="starbtn${on?' on':''}" data-act="star" data-t="lesson" data-v="${esc(l.id)}" aria-pressed="${on}" title="${on?tx('إزالة من نجوم اليوم','Remove from today’s stars'):tx('نجمة اليوم: يظهر الدرس في أعلى الصفحة','Today’s star: show this lesson at the top of the page')}" aria-label="${tx('نجمة اليوم','Today’s star')}">${star(on)}</button>`;
+  return on?`<span class="starbadge">${star(true)} ${tx('ركّزي عليه اليوم','Focus on it today')}</span>`:'';
 }
 /* The first page shows each subject by its icon and name only; what the week holds is inside the subject. */
 function renderHome(){
@@ -1680,6 +1871,9 @@ function lessonRow(l,first,k,total,opts){
     return '<span class="muted">—</span>';
   };
   const asTag=str(l.assessType)||(/إملاء|dictation/i.test(as)?'إملاء':/project|مشروع/i.test(as)?'مشروع':'تقييم');
+  const starred=isStarred('lesson',l.id),owner=canEditData();
+  const sc=owner?starCtl(l):'',badge=owner?'':starCtl(l);
+  const trAttrs=` data-lid="${esc(l.id)}"${starred?' class="starred"':''}`;
   const tools=canEditData()?`<span class="rowtools"><button class="btn small quiet" data-act="ledit" data-id="${esc(l.id)}">${tx('تعديل','Edit')}</button><button class="btn small quiet" data-act="lmove" data-dir="up" data-id="${esc(l.id)}" ${k===0?'disabled':''} aria-label="${tx('نقل للأعلى','Move up')}">↑</button><button class="btn small quiet" data-act="lmove" data-dir="down" data-id="${esc(l.id)}" ${k===total-1?'disabled':''} aria-label="${tx('نقل للأسفل','Move down')}">↓</button><button class="btn small quiet danger" data-act="dellesson" data-id="${esc(l.id)}">${tx('حذف','Delete')}</button></span>`:'';
   if(opts&&opts.older){
     const dictBtn=dictOf(l)?`<button class="btn small color" data-act="dict" data-id="${esc(l.id)}">${tx('مدرّب الإملاء','Dictation trainer')}</button>`:'';
@@ -1688,17 +1882,17 @@ function lessonRow(l,first,k,total,opts){
     let ex='';
     if(l.subject==='english'){const e=explainCell();ex=`<td class="st read" data-label="${tx('الشرح','Explanation')}"><div class="cellacts">${dictBtn&&/class="muted"/.test(e)?dictBtn:e+dictBtn}</div></td>`}
     const dictIn=l.subject!=='english'&&dictBtn?`<div class="cellacts olderown">${dictBtn}</div>`:'';
-    return `<tr>
+    return `<tr${trAttrs}>
     <td class="per" data-label="${tx('الأسبوع','Week')}"><span dir="auto">${esc(opts.when||'—')}</span></td>
-    <td class="lesson" data-label="${tx('الدرس','Lesson')}"><span class="lt" dir="auto">${esc(l.title)}</span>${pages?`<span class="pg">${tx('ص','p.')} ${esc(pages)}</span>`:''}${dictIn}${own}${toolsO}</td>
+    <td class="lesson" data-label="${tx('الدرس','Lesson')}">${sc}<span class="lt" dir="auto">${esc(l.title)}</span>${pages?`<span class="pg">${tx('ص','p.')} ${esc(pages)}</span>`:''}${badge}${dictIn}${own}${toolsO}</td>
     ${ex}
     <td class="st" data-label="${mapHead(l.subject)}">${mapCell()}</td>
     <td class="st" data-label="${tx('ورقة تدريب','Sheet')}">${cell('sheet',tx('افتح','Open'))}</td>
     <td class="st" data-label="${tx('لعبة','Game')}">${cell('game',tx('العبي','Play'))}</td></tr>`;
   }
-  return `<tr>
+  return `<tr${trAttrs}>
     <td class="per" data-label="${first}"><span dir="auto">${esc(perLabel(l.period))||'—'}</span></td>
-    <td class="lesson" data-label="${tx('الدرس','Lesson')}"><span class="lt" dir="auto">${esc(l.title)}</span>${pages?`<span class="pg">${tx('ص','p.')} ${esc(pages)}</span>`:''}${et?`<span class="etag">${esc(tx(ETYPE_AR[et],ETYPE_EN[et]))}</span>`:''}${tools}</td>
+    <td class="lesson" data-label="${tx('الدرس','Lesson')}">${sc}<span class="lt" dir="auto">${esc(l.title)}</span>${pages?`<span class="pg">${tx('ص','p.')} ${esc(pages)}</span>`:''}${et?`<span class="etag">${esc(tx(ETYPE_AR[et],ETYPE_EN[et]))}</span>`:''}${badge}${tools}</td>
     <td class="hwcell" data-label="${tx('الواجب والتقييم','Homework and tests')}">${hw?`<span class="hwl"><span class="tag hw">${tagLabel('واجب')}</span><span dir="auto">${esc(hw)}</span></span>`:''}${as?`<span class="hwl"><span class="tag as">${esc(tagLabel(asTag))}</span><span dir="auto">${esc(as)}</span></span>`:''}${dictOf(l)?`<button class="btn small color" style="margin-top:6px" data-act="dict" data-id="${esc(l.id)}">${tx('تدرّبي على الإملاء','Practise dictation')}</button>`:''}${!hw&&!as?'<span class="muted">—</span>':''}</td>
     <td class="photos" data-label="${tx('صور الدرس','Lesson photos')}"><div class="cellacts">${photo}</div></td>
     ${l.subject==='english'?`<td class="st read" data-label="${tx('الشرح','Explanation')}">${explainCell()}</td>`:''}
@@ -1769,9 +1963,10 @@ function renderSubject(s){
     return `<div class="frow"><span class="ftype">${badge}</span><div style="min-width:0"><h4 dir="auto">${esc(f.title)}</h4><div class="meta">${esc(fmtWhen(f.createdAt))}${f.note?' · <span dir="auto">'+esc(f.note)+'</span>':''}</div></div><div class="acts">${open}${delBtn(f.id)}</div></div>`;}).join('')}</div>`;
 
   const lessonEmpty=canMake()?tx('صور صفحات الدرس من الكتاب أو الدفتر تُرفع هنا، ثم يصنع زر «اصنع» نشاطاً منها.','Photos of lesson pages from the book or notebook go here, then “Make” turns them into an activity.'):tx('صور صفحات الدروس تُرفع هنا، وتُصنع منها الألعاب وأوراق التدريب.','Photos of lesson pages go here, and games and practice sheets are made from them.');
+  /* The way back to all subjects is its own clear button outside the coloured header, and it stays on screen while scrolling. */
   return `<section class="subj s-${s.id}">
+    <nav class="subnav" aria-label="${tx('التنقل','Navigation')}"><button class="homebtn" data-act="go" data-id="">${ICON.back.replace('<svg','<svg class="arr"')}${ICON.grid}<span>${tx('كل المواد','All subjects')}</span></button></nav>
     <div class="subj-head">
-      <button class="back" data-act="go" data-id="">${ICON.back} ${tx('كل المواد','All subjects')}</button>
       <div class="subj-row">
         <div class="subj-title"><span class="motif" dir="${s.md}">${esc(s.motif)}</span><div><h2>${esc(sName(s))}</h2><p>${esc(s.ar)}</p></div></div>
         <div class="week-actions">${canEditData()?`<button class="btn oncolor" data-act="oldform" data-subject="${s.id}">${ICON.plus} ${tx('إضافة درس سابق','Add an older lesson')}</button>`:''}${canUpload()?`<button class="btn oncolor" data-act="add" data-subject="${s.id}">${tx('إضافة ملفات أو صور','Add files or photos')}</button>`:''}</div>
@@ -2056,7 +2251,7 @@ function weekPrompt(n){
 For each subject, write one or two short lines on what is planned this week: topics, pages, homework, quizzes or tests, and due dates. Keep the plan's own language for each subject.
 Subject keys: math, science, english, arabic (Arabic language), islamic (Islamic studies), computer (ICT/computing). Use "" for a subject the plan does not mention.
 Also list each lesson of each subject in order under "lessons". Merge consecutive periods that teach the same lesson. "period" is in Arabic, like "الحصة 3" or "الحصتان 1–2". "pages" is only the page numbers, like "70–71". "homework" and "assess" are "" when the plan shows none; "assess" holds dictation words, a quiz, a test or a project for that lesson, and "assessType" is "إملاء", "تقييم" or "مشروع" (or ""). For english lessons also give "etype": "reading", "grammar", "phonics" or "writing" ("" for other subjects).
-Also give "title": a short label for the week as the plan names it (for example "Week 8 · 19–23 Oct"), or "" if it shows none, and "reminders": up to 3 short reminders a parent must not miss (tests, things to bring, events), or [].
+Also give "title": a short label for the week as the plan names it (for example "Week 8 · 19–23 Oct"), or "" if it shows none, and "reminders": short reminders a parent must not miss (dictation, tests, projects, things to bring, events), ONE per subject: each starts with the subject name in Arabic and a colon, for example "عربي: حفظ 5 أبيات", and puts everything for that subject together; or [].
 Reply with only JSON: {"title":"...","notes":{"math":"...","science":"...","english":"...","arabic":"...","islamic":"...","computer":"..."},"reminders":["..."],"lessons":{"math":[{"period":"الحصة 1","title":"...","pages":"","homework":"","assess":"","assessType":""}],"science":[],"english":[],"arabic":[],"islamic":[],"computer":[]}}`;
 }
 function normalizeReading(out){
@@ -2398,7 +2593,7 @@ async function extractWeek(id,files){
     const out=await S.sample.json(weekPrompt(blobs.length),{images:blobs,signal:ctl.signal,cache:false});
     if(!out||typeof out!=='object'||!out.notes)throw{code:'bad_shape'};
     const notes={};SUBJECTS.forEach(s=>{notes[s.id]=str(out.notes[s.id]).slice(0,500)});
-    const upd={notes,reminders:(Array.isArray(out.reminders)?out.reminders:[]).map(str).filter(Boolean).slice(0,4)};
+    const upd={notes,reminders:(Array.isArray(out.reminders)?out.reminders:[]).map(str).filter(Boolean).slice(0,8)};
     if(str(out.title))upd.title=str(out.title).slice(0,80);
     await S.db.doc('weeks/'+id).update(upd);
     const wk=S.weeks.find(x=>x.id===id);
@@ -3528,7 +3723,7 @@ const praiseWord=()=>praise(UI);
 function ttBanner(){
   const tabs=ttTables(),m=ttSaved();
   return `<button class="ttbanner" data-act="tt"><span class="ttx" aria-hidden="true">×</span><span class="ttbody"><b>${tx('جدول الضرب','Times tables')}</b><span class="muted">${tx('العبي وتدرّبي واحفظي الجداول التي أخذتِها','Play, practise and learn the tables you have studied')}</span>
-    <span class="ttbadges" dir="ltr">${tabs.map(a=>{const d=tableDone(m,a);return `<span class="ttbadge${d>=11?' full':''}">× ${a}${d&&d<11?` <small>${d}/11</small>`:''}</span>`}).join('')}</span></span><span class="btn color">${tx('ابدئي','Start')}</span></button>`;
+    <span class="ttbadges" dir="ltr">${tabs.map(a=>{const d=tableDone(m,a),st=isStarred('tt',a);return `<span class="ttbadge${d>=11?' full':''}${st?' starred':''}">${st?star(true):''}× ${a}${d&&d<11?` <small>${d}/11</small>`:''}</span>`}).join('')}</span></span><span class="btn color">${tx('ابدئي','Start')}</span></button>`;
 }
 function ttOpen(){
   const saved=S.results.tt||{};
@@ -3553,7 +3748,7 @@ function ttBump(a,b,ok){const k=fkey(a,b);const x=Object.assign({box:0,n:0},TT.m
 function ttHome(){
   stopSpeak();ttStop();TT.mode='home';
   const tabs=ttTables(),m=TT.m;
-  const cards=tabs.map(a=>{const d=tableDone(m,a);return `<button class="ttcard" data-act="ttlearn" data-n="${a}"><span class="big" dir="ltr">× ${a}</span><span class="ttbar"><span style="width:${Math.round(d/11*100)}%"></span></span><span class="muted">${tx('أتقنتِ','Mastered')} ${d} / 11</span></button>`}).join('');
+  const cards=tabs.map(a=>{const d=tableDone(m,a);return `<button class="ttcard${isStarred('tt',a)?' starred':''}" data-act="ttlearn" data-n="${a}">${isStarred('tt',a)?`<span class="ttstar" aria-label="${tx('نجمة اليوم','Today’s star')}">${star(true)}</span>`:''}<span class="big" dir="ltr">× ${a}</span><span class="ttbar"><span style="width:${Math.round(d/11*100)}%"></span></span><span class="muted">${tx('أتقنتِ','Mastered')} ${d} / 11</span></button>`}).join('');
   const chip=(v,l)=>`<button class="ttchip${String(TT.sel)===String(v)?' on':''}" data-act="ttsel" data-n="${v}">${l}</button>`;
   const steps=[['ladder',tx('قفزات العدّ','Skip-count jumps'),tx('اقفزي على خط الأعداد قفزة قفزة حتى تصلي إلى القمة','Jump along the number line, one jump at a time, to the top')],
     ['practice',tx('تدريب ذكي','Smart practice'),tx('أسئلة على الجداول، والحقائق الصعبة تعود أكثر حتى تتقنيها','Questions on your tables; the hard facts come back until you know them')],
@@ -3565,6 +3760,7 @@ function ttHome(){
     <div class="shelf-head" style="margin-top:18px"><h3>${tx('تعرّفي على الجدول','Learn a table')}</h3></div>
     <p class="muted" style="margin:6px 0 0">${tx('اضغطي جدولاً لتري حقائقه بالرسم وتسمعيها. الحقيقة التي تجيبينها صحيحة 3 مرات تصير «متقنة».','Tap a table to see and hear its facts. A fact you get right 3 times is mastered.')}</p>
     <div class="ttgrid">${cards}</div>
+    ${canEditData()?`<div class="ttsel"><span class="muted">${tx('نجوم اليوم:','Today’s stars:')}</span>${tabs.map(a=>{const on=isStarred('tt',a);return `<button class="ttstarchip${on?' on':''}" data-act="star" data-t="tt" data-v="${a}" aria-pressed="${on}">${star(on)}<span dir="ltr">× ${a}</span></button>`}).join('')}</div>`:''}
     <div class="shelf-head" style="margin-top:22px"><h3>${tx('العبي وتدرّبي','Play and practise')}</h3></div>
     <div class="ttsel"><span class="muted">${tx('الجدول:','Table:')}</span>${chip('all',tx('كلها','All'))}${tabs.map(a=>chip(a,`<span dir="ltr">× ${a}</span>`)).join('')}</div>
     <div class="steps">${steps.map((s,k)=>`<button class="step" data-act="ttmode" data-mode="${s[0]}"><span class="num">${k+1}</span><b>${s[1]}</b><span class="sub">${s[2]}</span></button>`).join('')}</div>
@@ -3646,7 +3842,10 @@ function ttLearn(a){stopSpeak();ttStop();TT.mode='learn';TT.la=+a;TT.fsel=null;t
 function ttLearnDraw(){
   const a=TT.la,m=TT.m;
   const facts=TT_B.map(b=>`<button class="ttfact${fbox(m,a,b)>=3?' mast':''}" data-act="ttfact" data-b="${b}"><span>${a} × ${b} =</span> <span class="p">${a*b}</span></button>`).join('');
-  openOverlay(ttShell(`<div class="dt-head"><span class="eyebrow">${tx('تعرّفي على الجدول','Learn the table')}</span><h2>${tx(`جدول ${a}`,`The ${a} times table`)}</h2></div>
+  const on=isStarred('tt',a);
+  const starRow=canEditData()?`<div class="pnext" style="justify-content:flex-start;margin-top:6px"><button class="ttstarchip${on?' on':''}" data-act="star" data-t="tt" data-v="${a}" aria-pressed="${on}">${star(on)}${on?tx('في نجوم اليوم','In today’s stars'):tx('أضيفي إلى نجوم اليوم','Add to today’s stars')}</button></div>`
+    :on?`<span class="starbadge">${star(true)} ${tx('ركّزي عليه اليوم','Focus on it today')}</span>`:'';
+  openOverlay(ttShell(`<div class="dt-head"><span class="eyebrow">${tx('تعرّفي على الجدول','Learn the table')}</span><h2>${tx(`جدول ${a}`,`The ${a} times table`)}</h2>${starRow}</div>
     ${ttTutor({reason:tableRule(a)})}
     <div class="pnext" style="justify-content:flex-start;margin-top:12px">${TTS.ok?`<button class="btn color" data-act="ttsayall">${ICON.speaker} ${tx('اسمعي الجدول','Hear the table')}</button>`:''}<button class="btn" data-act="tthide">${TT.hide?tx('أظهري النواتج','Show the answers'):tx('أخفي النواتج واختبري نفسك','Hide the answers and test yourself')}</button></div>
     <p class="muted" style="margin:10px 0 0">${TT.hide?tx('قولي الناتج في نفسك، ثم اضغطي لتتأكدي.','Say the answer to yourself, then tap to check.'):tx('اضغطي أي سطر لتري الرسم وطريقة الحل.','Tap any line to see its picture and how to find it.')}</p>
@@ -4083,6 +4282,10 @@ document.addEventListener('click',e=>{
   const a=el.dataset.act,id=el.dataset.id;
   switch(a){
     case 'go':go(id);break;
+    case 'star':toggleStar(el.dataset.t,el.dataset.v);break;
+    case 'stardone':toggleStarDone(el.dataset.k);break;
+    case 'startt':startTT(+el.dataset.n,el.dataset.mode);break;
+    case 'golesson':goLesson(id);break;
     case 'add':addForm(el.dataset.subject);break;
     case 'weekform':weekForm();break;
     case 'nexform':nexForm();break;

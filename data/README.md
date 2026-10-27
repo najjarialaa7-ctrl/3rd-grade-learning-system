@@ -9,6 +9,7 @@ The app stores everything in the Claude artifact database: collections of JSON d
 | `nexUrl` | Link to the school platform, shown on the cover |
 | `tables` | Times tables taught so far, e.g. `[0,1,2,3,4,5,10]`. The trainer shows only these |
 | `student` | `{ ar, en, gender: "f"\|"m", year }`: the name in Arabic and English, how Claude should address the child, and the school year |
+| `stars` | Today's stars: `[{ t: "lesson", id, at }` or `{ t: "tt", n, at }]`, a lesson or a times table the parent wants studied today. They show at the top of the first page, and go into the student's copy as `stars` |
 
 ## `weeks/*`: weekly plans
 

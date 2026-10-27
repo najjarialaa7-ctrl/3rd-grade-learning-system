@@ -2,6 +2,12 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 22 (2026-10-27)
+- **Today's stars.** The parent stars a lesson (from its row) or a times table (from the trainer). It shows at the top of the first page with a button for each of its activities, so the student starts there; the lesson stays in its table with a star on its row. The student can tick a star as finished on her device, and the parent removes the star when it is done. Stars are saved in `settings.stars` and go into the student's copy.
+- **A clear way back.** «All subjects» is now its own button outside the coloured header, and it stays on screen while scrolling.
+- **Reminders, one line per subject.** Each line starts with the subject's name and colour, in the subjects' order. A reminder that mixes subjects is split. Weekly plans are now asked for one reminder per subject.
+- `embed-snapshot.ps1` no longer rejects a snapshot whose keys differ only in case (Windows PowerShell's `ConvertFrom-Json` did).
+
 ## 21 (2026-10-26)
 - **The student's own sentence is checked on the device.** Before, the «Check my sentence» button needed Claude, so the student's copy (signed out) never checked anything. Now the page checks it by itself, in any tense or form of the word ("voyages", "tossed", "lit the lamp", "cheered her up"). It points out a missing word, a misspelling, a sentence that is too short, a copied example or a missing verb. It also fixes small things (capital letter, "I", a/an, the full stop), says whether the sentence shows the meaning, and repeats the meaning in English and Arabic. When Claude is in the page, Claude also checks the meaning and is told that any form of the word is fine. Enter checks the sentence too.
 - **Orange words.** A vocabulary word can be marked orange (`hl: "orange"`). It is highlighted in orange in the reading and the examples, and the word list shows yellow words and orange words in two groups. Readings made from photos also list words highlighted in orange in the book.

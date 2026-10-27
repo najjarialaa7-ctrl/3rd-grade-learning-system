@@ -1,0 +1,83 @@
+<!-- Today's stars: the parent stars a lesson or a times table, and it shows at the top of the first page for the student,
+     with every activity of the lesson, while the lesson stays in its table with a star on its row.
+     Also: the clear way back to all subjects, and the week's reminders shown one line per subject.
+     #student runs the student's copy (no runtime) with two stars in the embedded data. -->
+<script>
+const STUDENT=location.hash==='#student';
+const REM=['إملاء إنجليزي: valuable, moment — وإملاء عربي: «جَمَعَ الأطفالُ الأزهارَ»','إسلامية: تقييم تلاوة عبس 1–23','عربي: حفظ 5 أبيات · علوم: مشروع From seed to plant','الفنون (Watercolor techniques): الواجب على منصة نكس'];
+if(STUDENT){
+  /* Put two stars and the reminders into the embedded copy as the page reads it. */
+  const P=JSON.parse;JSON.parse=function(t,r){const o=P.call(this,t,r);
+    if(o&&Array.isArray(o.lessons)&&Array.isArray(o.items)&&!o.stars){o.stars=[{t:'lesson',id:'sample-math-1',at:'2026-10-27T07:00:00Z'},{t:'tt',n:3,at:'2026-10-27T07:01:00Z'}];if(o.weeks&&o.weeks[0])o.weeks[0].reminders=REM}
+    return o};
+}else{
+  const S0=JSON.parse(JSON.stringify(window.__SAMPLE));S0.weeks[0].reminders=REM;
+  fakeClaude(S0,{publish:true});
+}
+const lastStars=()=>{const w=(window.__writes||[]).filter(x=>x[0]==='settings/main').pop();return w&&w[1].stars};
+runTest(async()=>{
+  /* reminders: one line per subject, in the subjects' order, with the subject's name first */
+  const rows=$qa('#week .remlist li');
+  const labels=rows.map(li=>li.querySelector('.remsub').textContent.trim());
+  T_.ok(rows.length===5,'five reminder lines (english, arabic, islamic, science, art): '+labels.join(' | '));
+  T_.ok(rows[0]&&rows[0].classList.contains('s-science')&&rows[1].classList.contains('s-english')&&rows[2].classList.contains('s-arabic')&&rows[3].classList.contains('s-islamic')&&rows[4].classList.contains('remother'),'lines follow the subjects order, art last');
+  const ar=rows.find(li=>li.classList.contains('s-arabic'));
+  T_.ok(ar&&/إملاء: «جَمَعَ/.test(ar.textContent)&&/حفظ 5 أبيات/.test(ar.textContent),'both Arabic parts sit on the Arabic line: '+(ar&&ar.textContent));
+  const en=rows.find(li=>li.classList.contains('s-english'));
+  T_.ok(en&&/إملاء: valuable, moment/.test($txt('#week .remlist li.s-english .remtxt')),'the English line keeps "إملاء:" without repeating the subject');
+  T_.ok(rows[4]&&/الفنون/.test(rows[4].textContent)&&/Watercolor techniques/.test(rows[4].textContent),'a part with no subject keeps its own label');
+  T_.ok(/^تقييم تلاوة/.test($txt('#week .remlist li.s-islamic .remtxt')),'the subject word is dropped whole: '+$txt('#week .remlist li.s-islamic .remtxt'));
+
+  if(STUDENT){
+    /* the student's copy: the stars at the top, no editing */
+    T_.ok(!$q('#today').hidden&&$qa('#today .starcard').length===2,'two star cards at the top of the student copy');
+    T_.ok(!$qa('#today [data-act=star]').length,'no remove buttons for the student');
+    const mc=$q('#today .starcard.s-math');
+    T_.ok(mc&&mc.querySelector('[data-act=open][data-id=sample-math-game]')&&mc.querySelector('[data-act=open][data-id=sample-math-visual]'),'the lesson card opens its activities');
+    mc.querySelector('[data-act=open][data-id=sample-math-game]').click();
+    T_.ok($qa('#overlay .choice').length>0,'the game opens from the star card');
+    $q('#overlay [data-act=close]').click();
+    $q('#today [data-act=stardone]').click();
+    T_.ok($q('#today .starcard.done'),'she can tick a star as finished');
+    let saved={};try{saved=JSON.parse(localStorage.getItem('nay-stars')||'{}')}catch(e){}
+    T_.ok(Object.keys(saved).length===1,'the tick is kept on her device');
+    if(mc.querySelector('[data-act=startt]'))T_.fails.push('the lesson card should not have table buttons');
+    $q('#today [data-act=startt][data-n="3"][data-mode=learn]').click();
+    T_.ok(/3/.test($txt('#overlay .dt-head h2'))&&$q('#overlay .starbadge'),'the table card opens table 3, marked as today’s focus');
+    $q('#overlay [data-act=tthome]').click();$q('#overlay [data-act=close]').click();
+    $q('#today [data-act=golesson][data-id=sample-math-1]').click();
+    const tr=$q('tr[data-lid=sample-math-1]');
+    T_.ok(tr&&tr.classList.contains('starred')&&tr.querySelector('.starbadge'),'the lesson stays in its table, with a star badge');
+    T_.ok($q('#today').hidden,'the stars show on the first page only');
+    T_.ok($q('.ttbanner .ttbadge.starred'),'the starred table is marked on the math banner');
+    return;
+  }
+
+  /* the parent: no stars yet, a hint shows where they come from */
+  T_.ok(!$q('#today').hidden&&$q('#today.quiet')&&!$qa('#today .starcard').length,'with no stars the parent sees a short hint');
+  $q('[data-act=go][data-id=math]').click();
+  T_.ok($q('#today').hidden,'no stars section on a subject page');
+  T_.ok($q('.subnav .homebtn[data-act=go][data-id=""]')&&!$q('.subj-head [data-act=go]'),'the way back is its own button outside the coloured header');
+  const sb=$q('tr[data-lid=sample-math-1] .starbtn');
+  T_.ok(sb,'each lesson row has a star button for the parent');
+  sb.click();await wait(30);
+  let st=lastStars();
+  T_.ok(st&&st.length===1&&st[0].t==='lesson'&&st[0].id==='sample-math-1','starring saves it in the settings');
+  T_.ok($q('tr[data-lid=sample-math-1]').classList.contains('starred'),'the starred row is marked');
+  /* a times table */
+  $q('.ttbanner').click();
+  $q('#overlay [data-act=star][data-t=tt][data-v="3"]').click();await wait(30);
+  st=lastStars();
+  T_.ok(st&&st.length===2&&st[1].t==='tt'&&st[1].n===3,'a times table can be starred from the trainer');
+  T_.ok($q('#overlay .ttcard.starred'),'the starred table card is marked');
+  $q('#overlay [data-act=close]').click();
+  $q('.homebtn').click();
+  T_.ok($qa('#today .starcard').length===2,'both stars show at the top of the first page');
+  T_.ok($q('#today .starcard.s-math [data-act=open][data-id=sample-math-sheet]'),'the lesson card lists the sheet too');
+  T_.ok($q('#today [data-act=studentpub]'),'a button to update the student copy shows while the copy is out of date');
+  $q('#today [data-act=star][data-t=lesson]').click();await wait(30);
+  st=lastStars();
+  T_.ok(st&&st.length===1&&st[0].t==='tt','removing a star from its card');
+  T_.ok($qa('#today .starcard').length===1,'one card left');
+});
+</script>

@@ -2,6 +2,15 @@
 
 ## Cover and student profile
 - The cover shows the notebook's title, the name label (name, grade, school year) and the school platform link. Below it, the week box shows the week's title, reminders and earlier plan files, and each subject appears as a tile with only its icon and name; what the subject covers this week is inside its page. It also has the language switch and the **reading voice** button.
+- The week's reminders show **one line per subject**, in the subjects' order, with the subject's name and colour in front (tapping it opens the subject). A reminder that covers two subjects is split; a part that names no subject, such as art, keeps its own label. Plans read from now on are asked for one reminder per subject.
+- On a subject page, **All subjects** is its own clear button above the coloured header, and it stays on screen while scrolling.
+
+## Today's stars
+- The parent taps the star ☆ on any lesson row (this week or older lessons), or on a table in the times-tables trainer. The lesson or table then shows at the top of the first page under **نجوم اليوم** (Today's stars), so the student opens it straight away instead of looking for it.
+- A lesson's card shows its subject, title, week and pages, and a button for every activity it has: listen and words, rule or phonics card, picture guide, map, sheet, game and dictation trainer, plus **In the subject table**, which opens the subject at that row. A table's card opens the table, smart practice or the memory game for that table.
+- The lesson stays in its table; its row is tinted and, for the student, shows «ركّزي عليه اليوم» (focus on it today). Starred tables are marked in the trainer and on the math banner.
+- The student can tick **Finished?** on a card; the tick stays on her device. The parent removes a star from its card or its row when it is done.
+- Stars reach the student's copy with **Update the student's version**; the stars box shows that button while the copy is out of date.
 - The parent presses **Edit** on the label to set the child's name in Arabic and English, whether Claude should address a girl or a boy, and the school year. Without a name, the title reads «نظام التعلّم للصف الثالث» / *3rd Grade Learning System*.
 
 ## Weekly plan and lesson tables
