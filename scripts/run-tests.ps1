@@ -50,7 +50,8 @@ $cases = @(
   @('older-lessons.test.html', '', 6000),
   @('sentence-check.test.html', '', 6000),
   @('stars.test.html', '', 8000),
-  @('stars.test.html', '#student', 8000)
+  @('stars.test.html', '#student', 8000),
+  @('extra-sheet.test.html', '', 6000)
 )
 $failed = 0; $ran = 0
 foreach ($c in $cases) {

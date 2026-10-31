@@ -26,5 +26,6 @@ The runner puts four things together into one page: `_harness.js`, the sample sn
 | `older-lessons` | Past lessons sit in one table per subject, newest first; English is split into reading, grammar, and phonics with dictation |
 | `sentence-check` | Her own sentence is checked with no Claude: any form of the word counts, each kind of slip gets its hint, small fixes; orange and yellow words |
 | `stars` (plain, `#student`) | The parent stars and unstars lessons and tables; the cards at the top open each activity; the student's ticks; the back button; reminders one line per subject |
+| `extra-sheet` | Two sheets in one lesson get numbered buttons (row and star card); the word box shows and reads words; wrong-answer reasons and fixing to full marks |
 
 To run one test: `./scripts/run-tests.ps1 -Only sentence`.

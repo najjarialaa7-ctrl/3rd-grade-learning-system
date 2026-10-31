@@ -2,6 +2,10 @@
 
 The version number shows in the page footer («نسخة الدفتر N»).
 
+## 23 (2026-10-31)
+- **More than one sheet or game per lesson.** The lesson row and the star card show a numbered button for each («ورقة 1», «ورقة 2»), oldest first. Before, only the newest one could be opened.
+- **Word box on sheets.** A sheet can carry `bank`, the list of words to choose from, shown at the top like the box on a workbook page (and on the printable copy). Tapping a word reads it aloud. Sheets made from photos copy the page's word box when there is one.
+
 ## 22 (2026-10-27)
 - **Today's stars.** The parent stars a lesson (from its row) or a times table (from the trainer). It shows at the top of the first page with a button for each of its activities, so the student starts there; the lesson stays in its table with a star on its row. The student can tick a star as finished on her device, and the parent removes the star when it is done. Stars are saved in `settings.stars` and go into the student's copy.
 - **A clear way back.** «All subjects» is now its own button outside the coloured header, and it stays on screen while scrolling.

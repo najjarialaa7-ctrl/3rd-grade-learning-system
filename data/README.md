@@ -41,7 +41,7 @@ Common fields: `kind`, `subject`, `lesson` (the lessons id), `title`, `lang` (`a
 | `phonics` | `rules[{pattern, rule, words[]}]`, `words[{w, m, ar}]`, `tips[]` |
 | `visual` | Picture guide: `intro`, `cards[{type, label, …}]`; the card types are listed in [docs/features.md](../docs/features.md#picture-guides) |
 | `game` | `rounds[]` (see the question types below) |
-| `sheet` | `intro`, `sections[{title, items[]}]` |
+| `sheet` | `intro`, `bank[]` (optional word box shown at the top; tapping a word reads it), `sections[{title, items[]}]`. A lesson can have more than one sheet |
 
 ### Questions (game rounds and sheet items)
 

@@ -1,0 +1,37 @@
+<!-- A lesson with an extra practice sheet: the row (and a star card) shows one numbered button per sheet, oldest first,
+     and a sheet with a word box shows the words at the top; tapping a word reads it aloud. -->
+<script>
+const W1={id:'sh1',kind:'sheet',subject:'english',lesson:'e1',lang:'en',title:'Which blend?',createdAt:'2026-10-27T10:00:00Z',
+  sections:[{title:'A',items:[{type:'type',q:'scr + eam',answer:'scream'},{type:'tf',q:'Three starts with thr.',answer:true},{type:'type',q:'str + ong',answer:'strong'}]}]};
+const W2={id:'sh2',kind:'sheet',subject:'english',lesson:'e1',lang:'en',title:'Word meaning (practice again)',createdAt:'2026-10-31T09:00:00Z',
+  intro:'Use the words in the box.',bank:['strength','screen','spray'],
+  sections:[{title:'B',items:[
+    {type:'type',q:'He used his ______ to lift the box.',answer:'strength',hint:'The noun from strong.',why:'Strength is power.',wrong:{strengh:'Almost! You forgot the t before the h.'}},
+    {type:'type',q:'The window has a ______ to keep bugs out.',answer:'screen',wrong:{spray:'Spray is water in tiny drops.'}},
+    {type:'type',q:'We ______ the plants with water.',answer:'spray'}]}]};
+fakeClaude({weeks:[{id:'w1',weekOf:'2026-10-25',title:'Week',notes:{},reminders:[]}],
+  lessons:[{id:'e1',week:'w1',subject:'english',order:1,period:'1',title:'Phonics: Three-Letter Blends',etype:'phonics'}],items:[W1,W2]},
+  {settings:{stars:[{t:'lesson',id:'e1',at:'2026-10-31T08:00:00Z'}]}});
+runTest(async()=>{
+  const sheets=$qa('#today .starcard [data-act=open]').filter(b=>/sh\d/.test(b.dataset.id));
+  T_.ok(sheets.length===2&&sheets[0].dataset.id==='sh1'&&sheets[1].dataset.id==='sh2','the star card lists both sheets, oldest first');
+  $q('[data-act=go][data-id=english]').click();
+  const cell=[...$qa('tr[data-lid=e1] td.st')].map(td=>[...td.querySelectorAll('[data-act=open]')]).find(b=>b.length===2);
+  T_.ok(cell&&cell[0].dataset.id==='sh1'&&cell[1].dataset.id==='sh2','the lesson row has a numbered button for each sheet');
+  T_.ok(cell&&/1$/.test(cell[0].textContent.trim())&&/2$/.test(cell[1].textContent.trim()),'the buttons are numbered: '+(cell?cell.map(b=>b.textContent.trim()).join(' / '):''));
+  cell[1].click();
+  T_.ok($qa('#overlay .wbank .wbw').length===3,'the word box shows the words');
+  $q('#overlay .wbank [data-text=screen]').click();await wait(30);
+  T_.ok(window.__said.some(s=>s.text==='screen'),'tapping a word in the box reads it aloud');
+  $q('#q0-0').value='strengh';$q('#q0-1').value='spray';$q('#q0-2').value='spray';
+  $q('#overlay [data-act=scheck]').click();
+  T_.ok(/forgot the t/.test($txt('#overlay li[data-key="0-0"] .shelp')),'a missing letter gets its own explanation');
+  T_.ok(/tiny drops/.test($txt('#overlay li[data-key="0-1"] .shelp')),'the wrong word gets its own explanation');
+  $q('#q0-0').value='strength';$q('#q0-1').value='screen';$q('#overlay [data-act=scheck]').click();
+  T_.ok(/^3 \/ 3/.test($txt('#sscore')),'all three right after fixing: '+$txt('#sscore'));
+  $q('#overlay [data-act=close]').click();
+  /* a sheet without a box shows none */
+  $q('tr[data-lid=e1] [data-act=open][data-id=sh1]').click();
+  T_.ok(!$q('#overlay .wbank'),'no word box when the sheet has none');
+});
+</script>

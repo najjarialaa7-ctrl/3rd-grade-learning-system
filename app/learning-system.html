@@ -193,6 +193,10 @@ details.old li{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .paper .namefield{display:flex;flex-wrap:wrap;gap:6px 26px;color:var(--muted);font-size:.92rem}
 .paper .namefield span::after{content:"";display:inline-block;width:9em;border-bottom:1px solid var(--muted);margin-inline-start:6px}
 .paper .intro{margin:0}
+.wbank{display:flex;flex-wrap:wrap;gap:6px 8px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:4px}
+.wbw{all:unset;box-sizing:border-box;font-family:var(--read);font-weight:700;font-size:1.1rem;padding:2px 10px;border-radius:8px;background:var(--tint,var(--paper))}
+button.wbw{cursor:pointer}
+button.wbw:hover{background:var(--tint2,var(--line))}
 .paper section h3{font-family:var(--display);font-size:1.2rem;margin:18px 0 8px;color:var(--c)}
 .paper ol{margin:0;padding-inline-start:1.6em;display:grid;gap:14px}
 .paper li{padding-inline-start:4px}
@@ -1538,7 +1542,7 @@ const canEditData=()=>!!(S.db&&S.canWrite);
 const canMake=()=>!!(S.db&&S.canWrite&&S.sample&&S.sampleImages);
 
 /* ---------- render ---------- */
-const APP_VERSION={n:22,date:'2026-10-27'};
+const APP_VERSION={n:23,date:'2026-10-31'};
 function renderAll(){
   applyLang();renderCover();renderWeek();renderView();
   const f=$('#foot');if(f)f.textContent=tx('نسخة الدفتر ','Notebook version ')+APP_VERSION.n+' · '+fmtDay(APP_VERSION.date,{day:'numeric',month:'long',year:'numeric'});
@@ -1658,6 +1662,8 @@ function pastGroups(sid){
   return out;
 }
 function lessonItems(lid,kind){return S.items.filter(i=>i.lesson===lid&&i.kind===kind)}
+/* "ورقة 2", "Game 2": the name of the second (third…) sheet or game of a lesson. */
+function numLabel(kind,label,i){const N={sheet:['ورقة','Sheet'],game:['لعبة','Game']}[kind];return (N?tx(N[0],N[1]):label)+' '+(i+1)}
 function lessonImages(lid){
   const out=[];
   lessonItems(lid,'photo').slice().reverse().forEach(p=>(p.files||[]).forEach(f=>{if(String(f.type||'').startsWith('image/'))out.push(f)}));
@@ -1708,7 +1714,7 @@ function lessonActs(l){
   const rd=lessonItems(l.id,'reading')[0];
   if(rd){b.push(btn('open',rd.id,`${ICON.speaker} ${tx('اسمعي','Listen')}`));if((rd.vocab||[]).length)b.push(btn('vocab',rd.id,`${tx('الكلمات','Words')} (${rd.vocab.length})`))}
   [['grammar',tx('القاعدة','Rule')],['phonics',tx('الكلمات والقواعد','Words & rules')],['visual',tx('الشرح المصوّر','Picture guide')],['outline',tx('المخطط','Map')],['sheet',tx('ورقة التدريب','Practice sheet')],['game',tx('اللعبة','Game')]]
-    .forEach(([k,label])=>{const it=lessonItems(l.id,k)[0];if(it)b.push(btn('open',it.id,label))});
+    .forEach(([k,label])=>{const its=lessonItems(l.id,k).slice().reverse();its.forEach((it,i)=>b.push(btn('open',it.id,esc(its.length>1?numLabel(k,label,i):label))))});
   if(dictOf(l))b.push(btn('dict',l.id,tx('مدرّب الإملاء','Dictation trainer')));
   return b;
 }
@@ -1850,7 +1856,10 @@ function lessonRow(l,first,k,total,opts){
     return `<button class="btn small quiet" data-act="noread" data-id="${esc(l.id)}" aria-label="${tx('القراءة غير جاهزة','Reading not ready')}">${ICON.speaker}</button>`;
   };
   const cell=(kind,label)=>{
-    const it=lessonItems(l.id,kind)[0];
+    /* A lesson can have more than one sheet or game (for example an extra practice sheet): each gets its own numbered button, oldest first. */
+    const its=lessonItems(l.id,kind).slice().reverse();
+    if(its.length>1)return `<div class="cellacts">${its.map((it,i)=>`<button class="btn small color" data-act="open" data-id="${esc(it.id)}" title="${esc(it.title)}">${esc(numLabel(kind,label,i))}</button>`).join('')}</div>`;
+    const it=its[0];
     if(it)return `<button class="btn small color" data-act="open" data-id="${esc(it.id)}">${label}</button>`;
     if(imgs.length&&canMake()&&kinds.includes(kind))return `<button class="btn small" data-act="lmake" data-what="${kind}" data-id="${esc(l.id)}">${tx('اصنع','Make')}</button>`;
     return '<span class="muted">—</span>';
@@ -2237,7 +2246,8 @@ Reply with only JSON in exactly this shape:
 {"title":"worksheet title","lang":"en or ar","intro":"one short instruction line","sections":[
 {"title":"section title","items":[{"type":"type","q":"...","answer":"...","hint":"...","why":"...","wrong":{"<a likely mistake>":"..."}},{"type":"choice","q":"...","choices":["...","...","..."],"answer":"...","hint":"...","why":"...","wrong":{"<a wrong option>":"...","<the other wrong option>":"..."}},{"type":"tf","q":"...","answer":false,"hint":"...","why":"..."}]}
 ]}
-The "answer" of a "choice" question must be copied exactly from its "choices".`;
+The "answer" of a "choice" question must be copied exactly from its "choices".
+If the pages have a box of words to choose from (for example spelling words), also give "bank": the list of those words, and use them in the worksheet.`;
 }
 function outlinePrompt(s,it,n){
   return lessonContext(s,it,n)+`
@@ -2411,7 +2421,8 @@ function normalizeSheet(out){
   if(!out||typeof out!=='object')return null;
   const sections=(Array.isArray(out.sections)?out.sections:[]).map(sec=>({title:str(sec&&sec.title).slice(0,120),items:((sec&&Array.isArray(sec.items))?sec.items:[]).map(r=>normRound(r,false)).filter(Boolean).slice(0,20)})).filter(sec=>sec.items.length);
   const n=sections.reduce((t,x)=>t+x.items.length,0);if(n<3)return null;
-  return{title:str(out.title).slice(0,120)||'ورقة تدريب',lang:detectLang(out,sections.flatMap(x=>x.items.map(i=>i.q))),intro:str(out.intro).slice(0,240),sections};
+  const bank=(Array.isArray(out.bank)?out.bank:[]).map(str).filter(Boolean).slice(0,30).map(w=>w.slice(0,40));
+  return{title:str(out.title).slice(0,120)||'ورقة تدريب',lang:detectLang(out,sections.flatMap(x=>x.items.map(i=>i.q))),intro:str(out.intro).slice(0,240),...(bank.length?{bank}:{}),sections};
 }
 function sampleMsg(e){
   const c=e&&e.code;
@@ -2785,10 +2796,16 @@ function showSheet(it){
   openOverlay(`<div class="ov-in s-${esc(it.subject)}" dir="${lang==='ar'?'rtl':'ltr'}" lang="${lang}">
     <div class="ptop" style="justify-content:space-between"><button class="btn small" data-act="close">${L.close}</button>
       <span style="display:flex;gap:6px">${pdf?`<a class="btn small" href="${blobUrl(esc(pdf.id))}" target="_blank" rel="noopener">PDF ${ICON.out}</a>`:''}${S.downloads?`<button class="btn small" data-act="print">${ICON.down} ${L.print}</button>`:''}</span></div>
-    <article class="paper"><header><h2 dir="auto">${esc(it.title)}</h2><div class="namefield"><span>${L.name}</span><span>${L.date}</span></div>${it.intro?`<p class="intro" dir="auto">${esc(it.intro)}</p>`:''}</header>
+    <article class="paper"><header><h2 dir="auto">${esc(it.title)}</h2><div class="namefield"><span>${L.name}</span><span>${L.date}</span></div>${it.intro?`<p class="intro" dir="auto">${esc(it.intro)}</p>`:''}${bankHtml(it)}</header>
       ${body}
       <footer><button class="btn color" data-act="scheck">${L.checkAll}</button><button class="btn" data-act="sreset">${L.clear}</button><span class="sscore" id="sscore" aria-live="polite"></span></footer>
     </article></div>`);
+}
+/* The word box at the top of a sheet, like the box of spelling words on a workbook page. Tapping a word reads it aloud. */
+function sheetBank(it){return (Array.isArray(it&&it.bank)?it.bank:[]).map(str).filter(Boolean).slice(0,30)}
+function bankHtml(it){
+  const b=sheetBank(it);if(!b.length)return '';
+  return `<div class="wbank" dir="auto" aria-label="${tx('صندوق الكلمات','Word box')}">${b.map(w=>TTS.ok?`<button class="wbw" type="button" data-act="say" data-text="${esc(w)}">${esc(w)}</button>`:`<span class="wbw">${esc(w)}</span>`).join('')}</div>`;
 }
 /* Like a tutor marking the page: a first mistake gets a nudge and stays open to fix; a second one shows the answer and why. */
 function checkSheet(){
@@ -4127,7 +4144,8 @@ function printableHtml(it){
   let body='';
   if(it.kind==='sheet'){
     let n=0;const key=[];
-    body=`<h1>${esc(it.title)}</h1><div class="namef"><span>${L.name}</span><span>${L.date}</span></div>${it.intro?`<p>${esc(it.intro)}</p>`:''}<hr>`+
+    const bank=sheetBank(it);
+    body=`<h1>${esc(it.title)}</h1><div class="namef"><span>${L.name}</span><span>${L.date}</span></div>${it.intro?`<p>${esc(it.intro)}</p>`:''}${bank.length?`<div class="box" dir="auto" style="font-weight:700;word-spacing:.6em;line-height:2">${bank.map(esc).join(' &nbsp; ')}</div>`:''}<hr>`+
       sheetSections(it).map(sec=>`${sec.title?`<h3>${esc(sec.title)}</h3>`:''}<ol start="${n+1}">${sec.items.map(q=>{
         n++;key.push(n+'. '+(q.type==='tf'?(q.answer?L.tru:L.fal):q.answer.split('|')[0])+(q.why?' — '+q.why:''));
         const ans=q.type==='type'?'<span class="line"></span>':q.type==='choice'?`<div>${q.choices.map(x=>`<span class="opt">${esc(x)}</span>`).join('')}</div>`:`<div><span class="opt">${L.tru}</span><span class="opt">${L.fal}</span></div>`;
